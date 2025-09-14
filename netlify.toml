@@ -13,8 +13,8 @@
   NODE_VERSION = "18"
   
   # Build environment variables
-  # Backend API URL - Update this with your actual backend deployment URL
-  VITE_API_BASE_URL = "https://api.malangevents.com"
+  # Backend API URL - Updated to use Railway deployment
+  VITE_API_BASE_URL = "https://backend-main-production-ef63.up.railway.app"
 
 # Redirect rules for SPA
 [[redirects]]

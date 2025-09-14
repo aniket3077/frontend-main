@@ -3,7 +3,7 @@
 This file lists the backend API endpoints used by the frontend React application. New developers can use this as a reference to understand and connect the frontend to the backend.
 
 ## Environment Variable
-- `VITE_API_BASE_URL`: The base URL for the backend API (e.g., https://api.malangevents.com for production, http://localhost:5000 for development)
+- `VITE_API_BASE_URL`: The base URL for the backend API (e.g., https://backend-main-production-ef63.up.railway.app for production, http://localhost:5000 for development)
 
 ## Booking APIs (used in ModernBookingModal.jsx)
 - `POST /api/bookings/create`  

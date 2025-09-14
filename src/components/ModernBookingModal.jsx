@@ -24,7 +24,7 @@ const ModernBookingModal = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const apiBase = (import.meta.env && import.meta.env.VITE_API_BASE_URL) || "https://api.malangevents.com"; // fallback to production API
+  const apiBase = (import.meta.env && import.meta.env.VITE_API_BASE_URL) || "https://backend-main-production-ef63.up.railway.app"; // fallback to Railway API
 
   console.log('🔧 Debug: apiBase =', apiBase);
   console.log('🔧 Debug: import.meta.env =', import.meta.env);
