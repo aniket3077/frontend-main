@@ -91,19 +91,35 @@ const ModernBookingModal = () => {
   const priceInfo = calculatePrice();
 
   const handleTicketSubmit = async () => {
-
-    if (!ticketData.booking_date || !ticketData.num_tickets) {
+    // Check if any tickets are selected
+    const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
+    
+    if (!ticketData.booking_date || totalTickets === 0) {
       alert("Please select date and number of tickets");
       return;
     }
+    
     setLoading(true);
     try {
       const bookingUrl = `${apiBase}/api/bookings/create`;
       console.log('🔧 Debug: Calling booking URL:', bookingUrl);
+      
+      // Convert the new passes structure to the old backend format
+      // For now, we'll create multiple bookings for each pass type with tickets > 0
+      const passesToBook = Object.entries(ticketData.passes).filter(([type, count]) => count > 0);
+      
+      if (passesToBook.length === 0) {
+        alert("Please select at least one ticket");
+        return;
+      }
+      
+      // For simplicity, let's take the first pass type with tickets selected
+      const [firstPassType, firstPassCount] = passesToBook[0];
+      
       const payload = {
         booking_date: ticketData.booking_date,
-        num_tickets: ticketData.num_tickets,
-        pass_type: ticketData.pass_type,
+        num_tickets: firstPassCount,
+        pass_type: firstPassType,
         ticket_type: ticketType,
       };
       console.log('🔧 Debug: Payload:', payload);
@@ -215,7 +231,7 @@ const ModernBookingModal = () => {
         currency: order.currency,
         order_id: order.id,
         name: "Malang Ras Dandiya 2025",
-        description: `Booking for ${ticketData.num_tickets} ${labelMap[ticketType][ticketData.pass_type] || ticketData.pass_type}`,
+        description: `Booking for ${getTotalTickets()} ${getDisplayLabel()}`,
 
         image: window.location.origin + '/images/dandiya-logo.png',
         prefill: { name: userData.name, email: userData.email, contact: userData.phone },
@@ -253,10 +269,37 @@ const ModernBookingModal = () => {
   const resetBooking = () => {
     setStep(1);
     setBookingId(null);
-    setTicketData({ booking_date: "", pass_type: "female", num_tickets: 1 });
-
+    setTicketData({ 
+      booking_date: "", 
+      passes: {
+        female: 0,
+        male: 0,
+        couple: 0,
+        kids: 0,
+        family: 0,
+      },
+    });
     setUserData({ name: "", email: "", phone: "" });
     // Removed setIsOpen(false) as isOpen is not defined in this component
+  };
+
+  // Helper functions to work with the new passes structure
+  const getSelectedPassInfo = () => {
+    const passesWithTickets = Object.entries(ticketData.passes).filter(([type, count]) => count > 0);
+    if (passesWithTickets.length === 0) return { passType: 'female', ticketCount: 0 };
+    
+    // Return the first pass type with tickets (for compatibility with old API)
+    const [passType, ticketCount] = passesWithTickets[0];
+    return { passType, ticketCount };
+  };
+
+  const getTotalTickets = () => {
+    return Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
+  };
+
+  const getDisplayLabel = () => {
+    const { passType } = getSelectedPassInfo();
+    return labelMap[ticketType][passType] || passType;
   };
 
   return (
@@ -660,10 +703,10 @@ const ModernBookingModal = () => {
                   <div className="text-gray-600 font-medium">Date:</div>
                   <div className="text-right font-semibold text-gray-800">{ticketData.booking_date}</div>
                   <div className="text-gray-600 font-medium">Pass Type:</div>
-                  <div className="text-right font-semibold text-gray-800">{labelMap[ticketType][ticketData.pass_type] || ticketData.pass_type}</div>
+                  <div className="text-right font-semibold text-gray-800">{getDisplayLabel()}</div>
 
                   <div className="text-gray-600 font-medium">Tickets:</div>
-                  <div className="text-right font-semibold text-gray-800">{ticketData.num_tickets}</div>
+                  <div className="text-right font-semibold text-gray-800">{getTotalTickets()}</div>
                   <div className="text-gray-600 font-medium">Price per ticket:</div>
                   <div className="text-right font-semibold text-gray-800">
                     {priceInfo.discountApplied ? (
@@ -758,12 +801,12 @@ Book Again
                 <span className="font-bold text-sm text-gray-800 block mb-2">Your Tickets</span>
                 <div className="space-y-1">
                   <div className="flex items-center justify-between bg-pink-50 rounded px-2 py-1">
-                    <span className="font-medium text-gray-700 text-xs">{labelMap[ticketType][ticketData.pass_type] || ticketData.pass_type}</span>
+                    <span className="font-medium text-gray-700 text-xs">{getDisplayLabel()}</span>
                     <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-2 py-1 rounded">₹{priceInfo.finalPrice} each</span>
                   </div>
                   <div className="flex items-center justify-between bg-pink-50 rounded px-2 py-1">
                     <span className="font-medium text-gray-700 text-xs">Tickets</span>
-                    <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-2 py-1 rounded">{ticketData.num_tickets}</span>
+                    <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-2 py-1 rounded">{getTotalTickets()}</span>
                   </div>
                 </div>
               </div>
