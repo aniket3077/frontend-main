@@ -20,7 +20,7 @@ class PaymentService {
   // Create payment order
   async createPaymentOrder(orderData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/payments/create-order`, {
+      const response = await fetch(`${API_BASE_URL}/api/bookings/create-payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +48,7 @@ class PaymentService {
   // Verify payment
   async verifyPayment(paymentData) {
     try {
-      const response = await fetch(`${API_BASE_URL}/api/payments/verify`, {
+      const response = await fetch(`${API_BASE_URL}/api/bookings/confirm-payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
