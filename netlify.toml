@@ -1,6 +1,6 @@
 [build]
   # Directory to change to before starting a build
-  base = "frontend/"
+  base = "."
   
   # Directory that contains the deploy-ready HTML files and assets
   publish = "dist/"
@@ -13,7 +13,8 @@
   NODE_VERSION = "18"
   
   # Build environment variables
-  VITE_API_BASE_URL = "https://your-backend-url.vercel.app"
+  # TODO: Replace with your actual deployed backend URL
+  VITE_API_BASE_URL = "https://your-backend-deployment-url.herokuapp.com"
 
 # Redirect rules for SPA
 [[redirects]]
