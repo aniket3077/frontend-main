@@ -24,7 +24,7 @@ const ModernBookingModal = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const apiBase = (import.meta.env && import.meta.env.VITE_API_BASE_URL) || "http://localhost:5000"; // fallback to backend
+  const apiBase = (import.meta.env && import.meta.env.VITE_API_BASE_URL) || "https://api.malangevents.com"; // fallback to production API
 
   console.log('🔧 Debug: apiBase =', apiBase);
   console.log('🔧 Debug: import.meta.env =', import.meta.env);
@@ -233,7 +233,7 @@ const ModernBookingModal = () => {
         name: "Malang Ras Dandiya 2025",
         description: `Booking for ${getTotalTickets()} ${getDisplayLabel()}`,
 
-        image: window.location.origin + '/images/dandiya-logo.png',
+        image: 'https://malangevents.com/images/dandiya-logo.png',
         prefill: { name: userData.name, email: userData.email, contact: userData.phone },
         handler: async function (response) {
           try {

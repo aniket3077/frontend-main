@@ -13,8 +13,8 @@
   NODE_VERSION = "18"
   
   # Build environment variables
-  # TODO: Replace with your actual deployed backend URL
-  VITE_API_BASE_URL = "https://your-backend-deployment-url.herokuapp.com"
+  # Backend API URL - Update this with your actual backend deployment URL
+  VITE_API_BASE_URL = "https://api.malangevents.com"
 
 # Redirect rules for SPA
 [[redirects]]
