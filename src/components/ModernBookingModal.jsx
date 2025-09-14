@@ -28,6 +28,22 @@ const ModernBookingModal = () => {
 
   console.log('🔧 Debug: apiBase =', apiBase);
   console.log('🔧 Debug: import.meta.env =', import.meta.env);
+  console.log('🔧 Debug: VITE_API_BASE_URL =', import.meta.env?.VITE_API_BASE_URL);
+
+  // Test backend connectivity on component mount
+  React.useEffect(() => {
+    const testConnection = async () => {
+      try {
+        console.log('🔗 Testing backend connection to:', `${apiBase}/api/health`);
+        const response = await axios.get(`${apiBase}/api/health`);
+        console.log('✅ Backend connection successful:', response.data);
+      } catch (error) {
+        console.error('❌ Backend connection failed:', error.message);
+        console.error('Full error:', error);
+      }
+    };
+    testConnection();
+  }, [apiBase]);
 
   // Malang Raas Dandiya 2025 - Updated Pricing Structure
   const [ticketType, setTicketType] = useState('single'); // 'single' or 'season'
@@ -35,13 +51,14 @@ const ModernBookingModal = () => {
   const TICKET_PRICING = {
     single: {
       female: { base: 399, bulk_threshold: 6, bulk_price: 300 },
+      male: { base: 399, bulk_threshold: 6, bulk_price: 300 }, // Fixed: was 499, now matches backend
       couple: { base: 699, bulk_threshold: 6, bulk_price: 300 },
       kids: { base: 99, bulk_threshold: 6, bulk_price: 300 },
-      family: { base: 1300, bulk_threshold: 6, bulk_price: 300 },
-      male: { base: 499, bulk_threshold: 6, bulk_price: 300 }
+      family: { base: 1300, bulk_threshold: 6, bulk_price: 300 }
     },
     season: {
       female: { base: 2499 },
+      male: { base: 2499 }, // Added male season pass
       couple: { base: 3499 },
       family: { base: 5999 }
     }
@@ -50,13 +67,14 @@ const ModernBookingModal = () => {
   const labelMap = {
     single: {
       female: 'Female - ₹399',
+      male: 'Male - ₹399', // Fixed: was ₹499, now matches backend pricing
       couple: 'Couple - ₹699',
       kids: 'Kids (6-12 yrs) - ₹99',
-      family: 'Family (4 members) - ₹1300',
-      male: 'Male - ₹499'
+      family: 'Family (4 members) - ₹1300'
     },
     season: {
       female: 'Season Pass - Female (8 Days) - ₹2499',
+      male: 'Season Pass - Male (8 Days) - ₹2499', // Added male season pass
       couple: 'Season Pass - Couple (8 Days) - ₹3499',
       family: 'Season Pass - Family (4) (8 Days) - ₹5999'
     }
@@ -100,31 +118,52 @@ const ModernBookingModal = () => {
     }
     
     setLoading(true);
+    
+    // Define bookingUrl outside try block so it's accessible in catch block
+    const bookingUrl = `${apiBase}/api/bookings/create`;
+    console.log('🔧 Debug: Calling booking URL:', bookingUrl);
+    
     try {
-      const bookingUrl = `${apiBase}/api/bookings/create`;
-      console.log('🔧 Debug: Calling booking URL:', bookingUrl);
+      // Convert couple and family tickets to male + female tickets
+      const convertedPasses = { ...ticketData.passes };
       
-      // Convert the new passes structure to the old backend format
-      // For now, we'll create multiple bookings for each pass type with tickets > 0
-      const passesToBook = Object.entries(ticketData.passes).filter(([type, count]) => count > 0);
-      
-      if (passesToBook.length === 0) {
-        alert("Please select at least one ticket");
-        return;
+      // If there are couple tickets, convert them to male and female
+      if (convertedPasses.couple && convertedPasses.couple > 0) {
+        const coupleCount = convertedPasses.couple;
+        // Add male and female tickets (each couple = 1 male + 1 female)
+        convertedPasses.male = (convertedPasses.male || 0) + coupleCount;
+        convertedPasses.female = (convertedPasses.female || 0) + coupleCount;
+        // Remove the couple entry since we've converted it
+        delete convertedPasses.couple;
       }
       
-      // For simplicity, let's take the first pass type with tickets selected
-      const [firstPassType, firstPassCount] = passesToBook[0];
+      // If there are family tickets, convert them to 2 male + 2 female
+      if (convertedPasses.family && convertedPasses.family > 0) {
+        const familyCount = convertedPasses.family;
+        // Add male and female tickets (each family = 2 male + 2 female)
+        convertedPasses.male = (convertedPasses.male || 0) + (familyCount * 2);
+        convertedPasses.female = (convertedPasses.female || 0) + (familyCount * 2);
+        // Remove the family entry since we've converted it
+        delete convertedPasses.family;
+      }
       
+      // Send the converted passes structure to backend
       const payload = {
         booking_date: ticketData.booking_date,
-        num_tickets: firstPassCount,
-        pass_type: firstPassType,
+        passes: convertedPasses,
         ticket_type: ticketType,
+        original_passes: ticketData.passes, // Keep track of original selection for reference
       };
+      console.log('🔧 Debug: Original passes:', ticketData.passes);
+      console.log('🔧 Debug: Converted passes:', convertedPasses);
       console.log('🔧 Debug: Payload:', payload);
 
-      const res = await axios.post(bookingUrl, payload);
+      const res = await axios.post(bookingUrl, payload, {
+        timeout: 10000, // 10 second timeout
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       if (res.data.success) {
         setBookingId(res.data.booking.id);
         setStep(2);
@@ -135,6 +174,8 @@ const ModernBookingModal = () => {
       console.error('Booking creation error:', err);
       console.error('Error response:', err.response);
       console.error('Error message:', err.message);
+      console.error('Error code:', err.code);
+      console.error('Error config:', err.config);
       
       if (err.response?.data?.code === 'NO_DATABASE') {
         alert("Service temporarily unavailable. Database connection required for booking. Please contact support.");
@@ -142,10 +183,12 @@ const ModernBookingModal = () => {
         alert(`Error: ${err.response.data.message}`);
       } else if (err.response?.status) {
         alert(`Server error (${err.response.status}): ${err.response.statusText || 'Unknown error'}`);
+      } else if (err.code === 'ECONNABORTED') {
+        alert("Request timeout: The server took too long to respond. Please try again.");
       } else if (err.code === 'NETWORK_ERROR' || err.message.includes('Network Error')) {
-        alert("Network error: Please check your internet connection and ensure the backend server is running on port 5000");
+        alert(`Network error: Please check your internet connection and ensure the backend server is running on port 5000. Trying to connect to: ${bookingUrl}`);
       } else {
-        alert(`API error: ${err.message || "couldn't create booking"}`);
+        alert(`API error: ${err.message || "couldn't create booking"}. URL: ${bookingUrl}`);
       }
     } finally {
       setLoading(false);
