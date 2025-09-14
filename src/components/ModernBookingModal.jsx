@@ -259,8 +259,24 @@ const ModernBookingModal = () => {
       const rzp = new Razorpay(options);
       rzp.open();
     } catch (err) {
-      console.error(err);
-      alert("Error creating payment order");
+      console.error('Payment creation error:', err);
+      
+      // Handle specific error cases
+      if (err.response?.status === 500) {
+        if (err.response.data?.error?.includes('Razorpay')) {
+          alert("Payment system temporarily unavailable. Please try again later or contact support.");
+        } else {
+          alert("Server error occurred while creating payment. Please try again.");
+        }
+      } else if (err.response?.status === 401) {
+        alert("Payment authentication failed. Please contact support.");
+      } else if (err.response?.data?.error) {
+        alert(`Payment Error: ${err.response.data.error}`);
+      } else if (err.message) {
+        alert(`Error: ${err.message}`);
+      } else {
+        alert("Error creating payment order");
+      }
     } finally {
       setLoading(false);
     }
