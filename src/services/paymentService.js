@@ -1,4 +1,4 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.malangevents.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://backend-main-production-ef63.up.railway.app';
 
 class PaymentService {
   // Load Razorpay script dynamically
