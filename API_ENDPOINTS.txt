@@ -1,0 +1,30 @@
+# API Endpoints Used in Dandiya Frontend
+
+This file lists the backend API endpoints used by the frontend React application. New developers can use this as a reference to understand and connect the frontend to the backend.
+
+## Environment Variable
+- `VITE_API_BASE_URL`: The base URL for the backend API (e.g., http://localhost:5000)
+
+## Booking APIs (used in ModernBookingModal.jsx)
+- `POST /api/bookings/create`  
+  Create a new booking. Payload: `{ booking_date, num_tickets, pass_type, ticket_type }`
+- `POST /api/bookings/add-users`  
+  Add user details to a booking. Payload: `{ booking_id, name, email, phone }`
+- `POST /api/bookings/create-payment`  
+  Create a payment order for a booking. Payload: `{ booking_id, userEmail, userName }`
+- `POST /api/bookings/confirm-payment`  
+  Confirm payment after Razorpay. Payload: `{ booking_id, razorpay_order_id, razorpay_payment_id, razorpay_signature }`
+
+## QR Scanner APIs (used in ModernQRScanner.jsx)
+- `POST /api/qr/details`  
+  Get ticket details by QR code. Payload: `{ qrCode }`
+- `POST /api/qr/mark-used`  
+  Mark a ticket as used. Payload: `{ qrCode }`
+
+## Notes
+- All endpoints are relative to the base URL set in `VITE_API_BASE_URL`.
+- All requests are made using `axios`.
+- Update the base URL in `.env` or as needed for your environment.
+
+---
+This file is auto-generated for developer onboarding. Update as backend endpoints change.
