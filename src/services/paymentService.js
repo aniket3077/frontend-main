@@ -170,11 +170,18 @@ class PaymentService {
     return true;
   }
 
-  // Format currency
+  // Format currency - returns amount with ₹ symbol
   formatCurrency(amount) {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
+      minimumFractionDigits: 0,
+    }).format(amount);
+  }
+  
+  // Format amount without currency symbol - for manual ₹ symbol placement
+  formatAmount(amount) {
+    return new Intl.NumberFormat('en-IN', {
       minimumFractionDigits: 0,
     }).format(amount);
   }
