@@ -85,25 +85,60 @@ class PaymentService {
     }
   }
 
-  // Calculate pricing based on pass type and duration
-  calculatePricing(passType, passDuration, numTickets) {
+  // Calculate pricing based on pass type and duration - with discount support
+  calculatePricing(passType, passDuration, numTickets, bookingDate = null, ticketBreakdown = null) {
     const pricing = {
       daily: {
         female: 399,
-        couple: 699,
+        couple: 799, // Updated from 699 to match frontend
         kids: 99,
-        family: 1300
+        family: 1499, // Updated from 1300 to match frontend
+        male: 499 // Added male pricing
       },
       season: {
-        female: 2499,
+        female: 1999, // Updated from 2499 to match frontend
         couple: 3499,
-        family: 5999
+        family: 5999,
+        kids: 299, // Added kids season pricing
+        male: 2499 // Added male season pricing
       }
     };
 
     const prices = pricing[passDuration] || pricing.daily;
     const basePrice = prices[passType] || 0;
+    
+    // If ticket breakdown is provided, calculate based on all tickets with discounts
+    if (ticketBreakdown) {
+      let totalAmount = 0;
+      
+      // Check for bulk discount (6+ male+female tickets for single/daily)
+      const maleCount = ticketBreakdown.male || 0;
+      const femaleCount = ticketBreakdown.female || 0;
+      const bulkEligible = passDuration === 'daily' && (maleCount + femaleCount) >= 6;
+      
+      // Check for female discount on Sept 23rd
+      const isFemaleDiscountDay = bookingDate === "2025-09-23";
+      
+      Object.entries(ticketBreakdown).forEach(([type, count]) => {
+        const typePrice = prices[type] || 0;
+        let unitPrice = typePrice;
+        
+        // Apply discounts
+        if (type === 'female' && passDuration === 'daily' && isFemaleDiscountDay) {
+          // 50% off for female on Sept 23
+          unitPrice = Math.floor(typePrice / 2);
+        } else if (bulkEligible && (type === 'male' || type === 'female')) {
+          // Bulk discount for male/female
+          unitPrice = 350;
+        }
+        
+        totalAmount += unitPrice * count;
+      });
+      
+      return totalAmount;
+    }
 
+    // Original logic for single pass type
     // For couple pass, price is fixed for 2 people
     if (passType === 'couple') {
       return basePrice;
@@ -130,13 +165,13 @@ class PaymentService {
     }
 
     // Validate pass type
-    const validPassTypes = ['female', 'couple', 'kids', 'family'];
+    const validPassTypes = ['female', 'couple', 'kids', 'family', 'male']; // Added 'male'
     if (!validPassTypes.includes(bookingData.pass_type)) {
       throw new Error(`Invalid pass type: ${bookingData.pass_type}`);
     }
 
     // Validate pass duration
-    const validDurations = ['daily', 'season'];
+    const validDurations = ['daily', 'season', 'single']; // Added 'single' as alias for 'daily'
     if (!validDurations.includes(bookingData.pass_duration)) {
       throw new Error(`Invalid pass duration: ${bookingData.pass_duration}`);
     }
@@ -156,15 +191,30 @@ class PaymentService {
       throw new Error('Family pass must be for 1-4 members');
     }
 
-    // Validate amount
-    const expectedAmount = this.calculatePricing(
-      bookingData.pass_type,
-      bookingData.pass_duration,
-      bookingData.num_tickets
-    );
+    // Validate amount - use enhanced calculation if breakdown is available
+    let expectedAmount;
+    if (bookingData.ticket_breakdown && bookingData.booking_date) {
+      // Use enhanced pricing with discounts
+      expectedAmount = this.calculatePricing(
+        bookingData.pass_type,
+        bookingData.pass_duration,
+        bookingData.num_tickets,
+        bookingData.booking_date,
+        bookingData.ticket_breakdown
+      );
+    } else {
+      // Fallback to original calculation
+      expectedAmount = this.calculatePricing(
+        bookingData.pass_type,
+        bookingData.pass_duration,
+        bookingData.num_tickets
+      );
+    }
 
+    console.log('🔧 PaymentService: Expected amount:', expectedAmount, 'Got:', bookingData.total_amount);
+    
     if (Math.abs(bookingData.total_amount - expectedAmount) > 1) {
-      throw new Error(`Amount mismatch. Expected: ₹${expectedAmount}, Got: ₹${bookingData.total_amount}`);
+      throw new Error(`Amount mismatch. Expected: ₹${expectedAmount}, Got: ₹${bookingData.total_amount}. Breakdown: ${JSON.stringify(bookingData.ticket_breakdown || 'N/A')}`);
     }
 
     return true;
@@ -184,6 +234,44 @@ class PaymentService {
     return new Intl.NumberFormat('en-IN', {
       minimumFractionDigits: 0,
     }).format(amount);
+  }
+
+  // Debug helper - calculate and log pricing breakdown
+  debugPricingCalculation(bookingData) {
+    console.log('🔧 PaymentService Debug - Booking data:', bookingData);
+    
+    if (bookingData.ticket_breakdown && bookingData.booking_date) {
+      const expectedAmount = this.calculatePricing(
+        bookingData.pass_type,
+        bookingData.pass_duration,
+        bookingData.num_tickets,
+        bookingData.booking_date,
+        bookingData.ticket_breakdown
+      );
+      console.log('🔧 Enhanced pricing calculation:', expectedAmount);
+      console.log('🔧 Ticket breakdown:', bookingData.ticket_breakdown);
+      console.log('🔧 Booking date:', bookingData.booking_date);
+    }
+    
+    const basicAmount = this.calculatePricing(
+      bookingData.pass_type,
+      bookingData.pass_duration,
+      bookingData.num_tickets
+    );
+    console.log('🔧 Basic pricing calculation:', basicAmount);
+    console.log('🔧 Frontend sent amount:', bookingData.total_amount);
+    
+    return {
+      enhanced: bookingData.ticket_breakdown ? this.calculatePricing(
+        bookingData.pass_type,
+        bookingData.pass_duration,
+        bookingData.num_tickets,
+        bookingData.booking_date,
+        bookingData.ticket_breakdown
+      ) : null,
+      basic: basicAmount,
+      frontend: bookingData.total_amount
+    };
   }
 
   // Get pass type display name
