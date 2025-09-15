@@ -157,8 +157,13 @@ const ModernBookingModal = () => {
       // For simplicity, let's take the first pass type with tickets selected
       const [firstPassType, firstPassCount] = passesToBook[0];
 
+      // For season pass, send today's date as booking_date to satisfy backend
+      const getTodayDate = () => {
+        const d = new Date();
+        return d.toISOString().slice(0, 10);
+      };
       const payload = {
-        booking_date: ticketData.booking_date,
+        booking_date: ticketType === 'season' ? getTodayDate() : ticketData.booking_date,
         num_tickets: firstPassCount,
         pass_type: firstPassType,
         ticket_type: ticketType,
