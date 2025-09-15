@@ -6,6 +6,12 @@ const ModernBookingModal = () => {
   // Removed isOpen state, always show booking form
   const [step, setStep] = useState(1);
   const [bookingId, setBookingId] = useState(null);
+  const [toast, setToast] = useState({ show: false, message: "" });
+  // Toast helper
+  const showToast = (message, duration = 3000) => {
+    setToast({ show: true, message });
+    setTimeout(() => setToast({ show: false, message: "" }), duration);
+  };
   // Track count for each pass type
   const [ticketData, setTicketData] = useState({
     booking_date: "",
@@ -47,6 +53,9 @@ const ModernBookingModal = () => {
     }
   };
 
+  // Helper: is 23rd selected?
+  const isFemaleDiscountDay = ticketData.booking_date === "2025-09-23";
+
   const labelMap = {
     single: {
       female: 'Female - ₹399',
@@ -68,6 +77,10 @@ const ModernBookingModal = () => {
     let discountApplied = false;
     let savings = 0;
     let details = [];
+    // Bulk discount: only for male+female single tickets
+    let maleCount = Number(ticketData.passes.male) || 0;
+    let femaleCount = Number(ticketData.passes.female) || 0;
+    let bulkEligible = ticketType === 'single' && (maleCount + femaleCount) >= 6;
     Object.entries(ticketData.passes).forEach(([type, count]) => {
       count = Number(count) || 0;
       if (!count) return;
@@ -76,46 +89,74 @@ const ModernBookingModal = () => {
       let unitPrice = pricing.base;
       let originalPrice = pricing.base;
       let typeDiscount = 0;
-      if (ticketType === 'single' && pricing.bulk_threshold && count >= pricing.bulk_threshold) {
-        unitPrice = pricing.bulk_price;
+      // 50% off for female on 23rd Sept (single day only)
+      if (type === 'female' && ticketType === 'single' && isFemaleDiscountDay) {
+        unitPrice = Math.floor(pricing.base / 2);
+        typeDiscount = (pricing.base - unitPrice) * count;
         discountApplied = true;
+        savings += typeDiscount;
+      // Bulk discount for male/female only, combined 6+
+      } else if (bulkEligible && (type === 'male' || type === 'female')) {
+        unitPrice = 350;
         typeDiscount = (originalPrice - unitPrice) * count;
+        discountApplied = true;
         savings += typeDiscount;
       }
+      // No bulk discount for couple, kids, family
       totalAmount += unitPrice * count;
       details.push({ type, count, unitPrice, originalPrice, typeDiscount });
     });
-    return { totalAmount, discountApplied, savings, details };
+    return { totalAmount, discountApplied, savings, details, isFemaleDiscountDay, bulkEligible };
   };
 
   const priceInfo = calculatePrice();
 
   const handleTicketSubmit = async () => {
+
     // Check if any tickets are selected
-    const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
-    
-    if (!ticketData.booking_date || totalTickets === 0) {
-      alert("Please select date and number of tickets");
-      return;
+    const { female = 0, male = 0, couple = 0, kids = 0, family = 0 } = ticketData.passes;
+    const totalTickets = [female, male, couple, kids, family].reduce((sum, count) => sum + (Number(count) || 0), 0);
+
+    if (ticketType === 'season') {
+      // For season pass, only allow female, couple, family, and do not require date
+      if (female + couple + family === 0) {
+        showToast("Please select at least one season pass type (female, couple, or family)");
+        return;
+      }
+    } else {
+      // Restriction: 1 or more male not allowed unless with female, family, or couple
+      if (male > 0 && female === 0 && family === 0 && couple === 0) {
+        showToast("Male tickets must be booked with at least one female, family, or couple ticket.", 4000);
+        return;
+      }
+      // Restriction: 1 or more kids not allowed unless with female, family, or couple
+      if (kids > 0 && female === 0 && family === 0 && couple === 0) {
+        showToast("Kids tickets must be booked with at least one female, family, or couple ticket.", 4000);
+        return;
+      }
+      if (!ticketData.booking_date || totalTickets === 0) {
+        showToast("Please select date and number of tickets");
+        return;
+      }
     }
-    
+
     setLoading(true);
     try {
       const bookingUrl = `${apiBase}/api/bookings/create`;
       console.log('🔧 Debug: Calling booking URL:', bookingUrl);
-      
+
       // Convert the new passes structure to the old backend format
       // For now, we'll create multiple bookings for each pass type with tickets > 0
       const passesToBook = Object.entries(ticketData.passes).filter(([type, count]) => count > 0);
-      
+
       if (passesToBook.length === 0) {
-        alert("Please select at least one ticket");
+        showToast("Please select at least one ticket");
         return;
       }
-      
+
       // For simplicity, let's take the first pass type with tickets selected
       const [firstPassType, firstPassCount] = passesToBook[0];
-      
+
       const payload = {
         booking_date: ticketData.booking_date,
         num_tickets: firstPassCount,
@@ -129,23 +170,23 @@ const ModernBookingModal = () => {
         setBookingId(res.data.booking.id);
         setStep(2);
       } else {
-        alert("Failed to create booking");
+        showToast("Failed to create booking");
       }
     } catch (err) {
       console.error('Booking creation error:', err);
       console.error('Error response:', err.response);
       console.error('Error message:', err.message);
-      
+
       if (err.response?.data?.code === 'NO_DATABASE') {
-        alert("Service temporarily unavailable. Database connection required for booking. Please contact support.");
+        showToast("Service temporarily unavailable. Database connection required for booking. Please contact support.");
       } else if (err.response?.data?.message) {
-        alert(`Error: ${err.response.data.message}`);
+        showToast(`Error: ${err.response.data.message}`);
       } else if (err.response?.status) {
-        alert(`Server error (${err.response.status}): ${err.response.statusText || 'Unknown error'}`);
+        showToast(`Server error (${err.response.status}): ${err.response.statusText || 'Unknown error'}`);
       } else if (err.code === 'NETWORK_ERROR' || err.message.includes('Network Error')) {
-        alert("Network error: Please check your internet connection and ensure the backend server is running on port 5000");
+        showToast("Network error: Please check your internet connection and ensure the backend server is running on port 5000");
       } else {
-        alert(`API error: ${err.message || "couldn't create booking"}`);
+        showToast(`API error: ${err.message || "couldn't create booking"}`);
       }
     } finally {
       setLoading(false);
@@ -154,7 +195,7 @@ const ModernBookingModal = () => {
 
   const handleUserSubmit = async () => {
     if (!userData.name || !userData.email || !userData.phone) {
-      alert("Please fill all user details");
+  showToast("Please fill all user details");
       return;
     }
     // Email validation
@@ -183,11 +224,11 @@ const ModernBookingModal = () => {
       if (res.data.success) {
         setStep(3);
       } else {
-        alert("Failed to add user details");
+  showToast("Failed to add user details");
       }
     } catch (err) {
       console.error(err);
-      alert("API error: couldn't add user details");
+  showToast("API error: couldn't add user details");
     } finally {
       setLoading(false);
     }
@@ -223,7 +264,7 @@ const ModernBookingModal = () => {
 
       // Otherwise, proceed with Razorpay payment flow
       const ok = await loadRazorpay("https://checkout.razorpay.com/v1/checkout.js");
-      if (!ok) return alert("Failed to load Razorpay SDK");
+  if (!ok) return showToast("Failed to load Razorpay SDK");
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -246,11 +287,11 @@ const ModernBookingModal = () => {
             if (confirmRes.data.success) {
               setStep(4);
             } else {
-              alert("Payment confirmed but failed at backend");
+              showToast("Payment confirmed but failed at backend");
             }
           } catch (err) {
             console.error(err);
-            alert("Error confirming payment");
+            showToast("Error confirming payment");
           }
         },
         theme: { color: "#e11d48" },
@@ -264,18 +305,18 @@ const ModernBookingModal = () => {
       // Handle specific error cases
       if (err.response?.status === 500) {
         if (err.response.data?.error?.includes('Razorpay')) {
-          alert("Payment system temporarily unavailable. Please try again later or contact support.");
+          showToast("Payment system temporarily unavailable. Please try again later or contact support.");
         } else {
-          alert("Server error occurred while creating payment. Please try again.");
+          showToast("Server error occurred while creating payment. Please try again.");
         }
       } else if (err.response?.status === 401) {
-        alert("Payment authentication failed. Please contact support.");
+  showToast("Payment authentication failed. Please contact support.");
       } else if (err.response?.data?.error) {
-        alert(`Payment Error: ${err.response.data.error}`);
+  showToast(`Payment Error: ${err.response.data.error}`);
       } else if (err.message) {
-        alert(`Error: ${err.message}`);
+  showToast(`Error: ${err.message}`);
       } else {
-        alert("Error creating payment order");
+  showToast("Error creating payment order");
       }
     } finally {
       setLoading(false);
@@ -320,6 +361,12 @@ const ModernBookingModal = () => {
 
   return (
     <div className="max-w-md mx-auto py-4 px-4">
+      {/* Toast Popup */}
+      {toast.show && (
+        <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-pink-600 text-white px-6 py-3 rounded-lg shadow-lg text-base font-semibold animate-fade-in-out transition-all duration-300">
+          {toast.message}
+        </div>
+      )}
       {/* <div className="rounded-2xl shadow-xl w-full p-6 overflow-y-auto"> */}
         <div className="flex justify-between items-center mb-6">
         {/* <h2 className="text-center text-2xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">Book Your Dandiya Pass</h2> */}
@@ -339,10 +386,10 @@ const ModernBookingModal = () => {
                 <h3 className="text-sm font-bold bg-gradient-to-r from-pink-600 to-orange-500 bg-clip-text text-transparent mb-1">
                   Book Your Ticket
                 </h3>
-                <p className="text-gray-600 text-xs mb-1">Malang Raas Dandiya 2025 • Sep 24 - Oct 1</p>
-                
+                <p className="text-gray-600 text-xs mb-4">Malang Raas Dandiya 2025 • Sep 24 - Oct 1</p>
+
                 {/* Bulk Discount Banner */}
-                <div className="bg-gradient-to-r from-yellow-200 to-pink-100 rounded-lg shadow flex items-center justify-center relative mb-3 mt-2 py-2 px-3">
+                <div className="bg-gradient-to-r from-yellow-200 to-pink-100 rounded-lg shadow flex items-center justify-center relative mb-3 mt-6 py-2 px-3">
                   <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow border-2 border-white" style={{letterSpacing:'0.04em'}}>SPECIAL OFFER</span>
                   <span className="flex items-center text-lg font-bold">
                     <svg className="w-6 h-6 mr-2 text-purple-800" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2.08 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
@@ -365,8 +412,15 @@ const ModernBookingModal = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        setTicketType('single');
-                        setTicketData({ ...ticketData, pass_type: 'female' });
+                        if (ticketType !== 'single') {
+                          setTicketType('single');
+                          // Reset counts when switching to single to avoid season carryover
+                          setTicketData({
+                            booking_date: '',
+                            passes: { female: 0, male: 0, couple: 0, kids: 0, family: 0 },
+                            pass_type: 'female'
+                          });
+                        }
                       }}
                       className={`w-full rounded-lg transition-colors duration-150 min-h-[52px] px-4 py-3 border text-center ${
                         ticketType === 'single'
@@ -382,8 +436,15 @@ const ModernBookingModal = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        setTicketType('season');
-                        setTicketData({ ...ticketData, pass_type: 'female' });
+                        if (ticketType !== 'season') {
+                          setTicketType('season');
+                          // Reset counts when switching to season to avoid single carryover
+                          setTicketData({
+                            booking_date: '', // not used for season
+                            passes: { female: 0, male: 0, couple: 0, kids: 0, family: 0 },
+                            pass_type: 'female'
+                          });
+                        }
                       }}
                       className={`w-full rounded-lg transition-colors duration-150 min-h-[52px] px-4 py-3 border text-center ${
                         ticketType === 'season'
@@ -451,34 +512,56 @@ const ModernBookingModal = () => {
                     Pass Type
                   </label>
                   <div className="space-y-1">
-                    {Object.entries(labelMap[ticketType]).map(([key, label]) => (
-                      <div key={key} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 mb-1 border border-gray-200">
-                        <span className="font-medium text-gray-700 text-sm">{label}</span>
-                        <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setTicketData(prev => ({
-                              ...prev,
-                              passes: { ...prev.passes, [key]: Math.max(0, (prev.passes[key] || 0) - 1) }
-                            }))}
-                            className="w-8 h-8 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-gray-300 flex items-center justify-center"
-                          >
-                            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4"/></svg>
-                          </button>
-                          <span className="w-6 text-center font-bold text-gray-800">{ticketData.passes[key]}</span>
-                          <button
-                            type="button"
-                            onClick={() => setTicketData(prev => ({
-                              ...prev,
-                              passes: { ...prev.passes, [key]: (prev.passes[key] || 0) + 1 }
-                            }))}
-                            className="w-8 h-8 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-gray-300 flex items-center justify-center"
-                          >
-                            <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
-                          </button>
+                    {Object.entries(labelMap[ticketType]).map(([key, label]) => {
+                      // For season pass, only allow female, couple, family
+                      if (ticketType === 'season' && !['female', 'couple', 'family'].includes(key)) return null;
+                      let showBulk = false;
+                      if (ticketType === 'single' && (key === 'male' || key === 'female')) {
+                        const maleCount = Number(ticketData.passes.male) || 0;
+                        const femaleCount = Number(ticketData.passes.female) || 0;
+                        showBulk = (maleCount + femaleCount) >= 6;
+                      }
+                      return (
+                        <div key={key} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 mb-1 border border-gray-200">
+                          <span className="font-medium text-gray-700 text-sm">
+                            {key === 'female' && ticketType === 'single' && isFemaleDiscountDay ? (
+                              <>
+                                <span className="line-through text-gray-400 mr-1">₹399</span>
+                                <span className="text-pink-600 font-bold">₹200</span> <span className="ml-1">Female</span>
+                              </>
+                            ) : showBulk && (key === 'male' || key === 'female') ? (
+                              <>
+                                <span className="line-through text-gray-400 mr-1">₹{TICKET_PRICING.single[key].base}</span>
+                                <span className="text-green-700 font-bold">₹350</span> <span className="ml-1">{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                              </>
+                            ) : label}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <button
+                              type="button"
+                              onClick={() => setTicketData(prev => ({
+                                ...prev,
+                                passes: { ...prev.passes, [key]: Math.max(0, (prev.passes[key] || 0) - 1) }
+                              }))}
+                              className="w-8 h-8 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-gray-300 flex items-center justify-center"
+                            >
+                              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4"/></svg>
+                            </button>
+                            <span className="w-6 text-center font-bold text-gray-800">{ticketData.passes[key]}</span>
+                            <button
+                              type="button"
+                              onClick={() => setTicketData(prev => ({
+                                ...prev,
+                                passes: { ...prev.passes, [key]: (prev.passes[key] || 0) + 1 }
+                              }))}
+                              className="w-8 h-8 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:border-gray-300 flex items-center justify-center"
+                            >
+                              <svg className="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                            </button>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
@@ -506,7 +589,11 @@ const ModernBookingModal = () => {
                       <span className="text-base font-bold text-gray-700">Grand Total</span>
                       <span className="text-xl font-extrabold text-gray-900">₹{priceInfo.totalAmount}</span>
                     </div>
-                    {priceInfo.discountApplied && (
+                    {/* Female 50% discount message */}
+                    {priceInfo.isFemaleDiscountDay && ticketType === 'single' && (
+                      <div className="text-pink-600 text-xs font-semibold mt-1">Special: 50% OFF for Female tickets on 23rd September!</div>
+                    )}
+                    {priceInfo.bulkEligible && !priceInfo.isFemaleDiscountDay && (
                       <div className="text-green-600 text-xs font-semibold mt-1">Bulk discount applied! You save ₹{priceInfo.savings}</div>
                     )}
                   </div>
