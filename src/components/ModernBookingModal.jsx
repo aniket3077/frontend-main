@@ -182,8 +182,7 @@ const ModernBookingModal = () => {
       const bookingUrl = `${apiBase}/api/bookings/create`;
       console.log('🔧 Debug: Calling booking URL:', bookingUrl);
 
-      // Convert the new passes structure to the old backend format
-      // For now, we'll create multiple bookings for each pass type with tickets > 0
+      // Convert the new passes structure to work with current backend
       const passesToBook = Object.entries(ticketData.passes).filter(([type, count]) => count > 0);
 
       if (passesToBook.length === 0) {
@@ -191,21 +190,35 @@ const ModernBookingModal = () => {
         return;
       }
 
-      // For simplicity, let's take the first pass type with tickets selected
-      const [firstPassType, firstPassCount] = passesToBook[0];
+      // Calculate total tickets and find primary pass type (highest count)
+      const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
+      const primaryPass = passesToBook.reduce((max, [type, count]) => 
+        count > max.count ? { type, count } : max, 
+        { type: passesToBook[0][0], count: passesToBook[0][1] }
+      );
 
       // For season pass, send today's date as booking_date to satisfy backend
       const getTodayDate = () => {
         const d = new Date();
         return d.toISOString().slice(0, 10);
       };
+      
+      // Use our calculated total amount
+      const totalAmount = priceInfo.totalAmount;
+      
       const payload = {
         booking_date: ticketType === 'season' ? getTodayDate() : ticketData.booking_date,
-        num_tickets: firstPassCount,
-        pass_type: firstPassType,
+        num_tickets: totalTickets, // Send total tickets instead of just first type
+        pass_type: primaryPass.type, // Send primary pass type
         ticket_type: ticketType,
+        total_amount: totalAmount, // Add total amount for backend validation
+        pass_duration: ticketType === 'season' ? 'season' : 'daily', // Map ticket_type to pass_duration
+        // Add detailed breakdown for backend reference
+        ticket_breakdown: Object.fromEntries(passesToBook)
       };
       console.log('🔧 Debug: Payload:', payload);
+      console.log('🔧 Debug: Frontend calculated amount:', totalAmount);
+      console.log('🔧 Debug: Ticket breakdown:', Object.fromEntries(passesToBook));
 
       const res = await axios.post(bookingUrl, payload);
       if (res.data.success) {
