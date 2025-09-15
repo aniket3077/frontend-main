@@ -56,6 +56,15 @@ const LandingPage = () => {
 
       {/* Event Details */}
       <div className="max-w-7xl mx-auto py-16 px-4">
+        <div className="max-w-xs mx-auto bg-white rounded-xl shadow-md p-6 mb-10">
+          <h3 className="text-2xl font-bold mb-4 text-gray-800 flex items-center gap-2">Event Details</h3>
+          <ul className="space-y-3 text-gray-700 text-base">
+            <li className="flex items-center gap-2"><span role="img" aria-label="calendar">📅</span> 23 September 2025</li>
+            <li className="flex items-center gap-2"><span role="img" aria-label="clock">⏰</span> 7:00 PM onwards</li>
+            <li className="flex items-center gap-2"><span role="img" aria-label="location">📍</span> Chh. Sambhaji Nagar</li>
+            <li className="flex items-center gap-2"><span role="img" aria-label="money">💰</span> Starting from ₹200</li>
+          </ul>
+        </div>
         <h2 className="text-5xl font-extrabold text-center mb-4 bg-gradient-to-r from-orange-500 via-pink-500 to-yellow-400 bg-clip-text text-transparent drop-shadow-lg animate-pulse">
           <span className="inline-block animate-gradient-x">Event Highlights</span>
         </h2>
@@ -90,17 +99,19 @@ const LandingPage = () => {
           {/* Group Discount Info Box */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg shadow-sm px-8 py-4 w-full max-w-xl flex flex-col sm:flex-row items-center justify-center gap-2 text-lg mb-2">
             <span className="text-blue-900 font-medium text-center sm:text-left">Get special discounts on group bookings. Contact:</span>
-            <a href="tel:9172788397" className="text-blue-700 hover:text-blue-900 mx-1" title="Call">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 inline">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h.75a2.25 2.25 0 002.25-2.25v-2.25a2.25 2.25 0 00-2.25-2.25h-1.386a1.875 1.875 0 01-1.318-.545l-2.272-2.272a1.875 1.875 0 01-.545-1.318V7.5A2.25 2.25 0 0012 5.25H9.75A2.25 2.25 0 007.5 7.5v.75z" />
-              </svg>
-            </a>
-            <a href="https://wa.me/91972788397" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-800 mx-1" title="WhatsApp">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-6 h-6 inline">
-                <path d="M20.52 3.48A12.07 12.07 0 0012 0C5.37 0 0 5.37 0 12a11.93 11.93 0 001.67 6.09L0 24l6.18-1.62A12.09 12.09 0 0016 24c6.63 0 12-5.37 12-12a11.93 11.93 0 00-3.48-8.52zM12 22a10.13 10.13 0 01-5.19-1.43l-.37-.22-3.67.96.98-3.58-.24-.37A10.13 10.13 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.2-7.6c-.28-.14-1.65-.81-1.9-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.2-.6.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.34.42-.51.14-.17.18-.29.28-.48.09-.19.05-.36-.02-.5-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47-.16-.01-.36-.01-.56-.01-.19 0-.5.07-.76.34-.26.27-1 1-.98 2.43.02 1.43 1.03 2.81 1.18 3.01.15.2 2.03 3.1 5.02 4.22.7.24 1.25.38 1.68.49.71.18 1.36.15 1.87.09.57-.07 1.65-.67 1.88-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z" />
-              </svg>
-            </a>
-            <span className="text-blue-900 font-bold text-xl ml-1">91727 88397</span>
+            <span className="flex flex-row items-center gap-3 ml-2">
+              <a href="tel:9172788397" className="text-blue-700 hover:text-blue-900" title="Call">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.2} stroke="currentColor" className="w-8 h-8 inline align-middle">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h.75a2.25 2.25 0 002.25-2.25v-2.25a2.25 2.25 0 00-2.25-2.25h-1.386a1.875 1.875 0 01-1.318-.545l-2.272-2.272a1.875 1.875 0 01-.545-1.318V7.5A2.25 2.25 0 0012 5.25H9.75A2.25 2.25 0 007.5 7.5v.75z" />
+                </svg>
+              </a>
+              <a href="https://wa.me/91972788397" target="_blank" rel="noopener noreferrer" className="text-green-600 hover:text-green-800" title="WhatsApp">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" className="w-8 h-8 inline align-middle">
+                  <path d="M20.52 3.48A12.07 12.07 0 0012 0C5.37 0 0 5.37 0 12a11.93 11.93 0 001.67 6.09L0 24l6.18-1.62A12.09 12.09 0 0016 24c6.63 0 12-5.37 12-12a11.93 11.93 0 00-3.48-8.52zM12 22a10.13 10.13 0 01-5.19-1.43l-.37-.22-3.67.96.98-3.58-.24-.37A10.13 10.13 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.2-7.6c-.28-.14-1.65-.81-1.9-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.2-.6.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.34.42-.51.14-.17.18-.29.28-.48.09-.19.05-.36-.02-.5-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47-.16-.01-.36-.01-.56-.01-.19 0-.5.07-.76.34-.26.27-1 1-.98 2.43.02 1.43 1.03 2.81 1.18 3.01.15.2 2.03 3.1 5.02 4.22.7.24 1.25.38 1.68.49.71.18 1.36.15 1.87.09.57-.07 1.65-.67 1.88-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z" />
+                </svg>
+              </a>
+              <span className="text-blue-900 font-bold text-xl ml-2 whitespace-nowrap">91727 88397</span>
+            </span>
           </div>
         </div>
       </div>
@@ -115,8 +126,8 @@ const LandingPage = () => {
         {/* Event Meta */}
         <div className="flex flex-col items-center gap-2 mb-10 text-gray-700">
           <div className="flex flex-wrap items-center justify-center gap-3 text-sm">
-            <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">📅 8 Days of Festive Madness</span>
-            <span className="px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-medium">🗓 24th September – 1st October</span>
+            <span className="px-3 py-1 rounded-full bg-orange-100 text-orange-700 font-medium">📅 23 September, 7pm onwards</span>
+            <span className="px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-medium">🗓 Only on 23rd September</span>
             <span className="px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 font-medium">📍 Regal Lawns, Near Deolai Chowk, Beed Bypass, Chhatrapati Sambhajinagar</span>
           </div>
         </div>

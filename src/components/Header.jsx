@@ -1,15 +1,15 @@
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import logo11 from "../assets/logo11.png";
+// import logo11 from "../assets/logo11.png";
 
 const Header = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = React.useState("landing");
   const [menuOpen, setMenuOpen] = React.useState(false);
-  // Prefer public logo path; fall back to bundled logo asset if missing
-  const [logoSrc, setLogoSrc] = React.useState("/images/dandiya-logo.png");
+  // Use new logo in public/images
+  const [logoSrc] = React.useState("/images/RaasLogo.PNG");
 
   return (
     <nav className="bg-white border-b shadow-sm sticky top-0 z-50">
@@ -22,7 +22,6 @@ const Header = () => {
                 src={logoSrc}
                 alt="Malang Ras Dandiya Logo"
                 className="w-full h-full object-contain"
-                onError={() => setLogoSrc(logo11)}
               />
             </div>
             <div className="truncate">

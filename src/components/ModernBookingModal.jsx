@@ -1,8 +1,20 @@
 import React, { useState } from "react";
+import ReactDOM from "react-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 const ModernBookingModal = () => {
+  // Show loading overlay after payment, before confirmation
+  const [showConfirmationLoading, setShowConfirmationLoading] = useState(false);
+
+  // Helper: show loading bar for 2 seconds before showing confirmation
+  const showConfirmationWithDelay = () => {
+    setShowConfirmationLoading(true);
+    setTimeout(() => {
+      setShowConfirmationLoading(false);
+      setStep(4);
+    }, 2000); // 2 seconds loading
+  };
   // Removed isOpen state, always show booking form
   const [step, setStep] = useState(1);
   const [bookingId, setBookingId] = useState(null);
@@ -263,7 +275,7 @@ const ModernBookingModal = () => {
 
       // If email was sent directly (bypassing payment), go to confirmation
       if (emailSent) {
-        setStep(4);
+        showConfirmationWithDelay();
         return;
       }
 
@@ -290,7 +302,7 @@ const ModernBookingModal = () => {
               razorpay_signature: response.razorpay_signature,
             });
             if (confirmRes.data.success) {
-              setStep(4);
+              showConfirmationWithDelay();
             } else {
               showToast("Payment confirmed but failed at backend");
             }
@@ -365,7 +377,24 @@ const ModernBookingModal = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto py-4 px-4">
+    <div className="max-w-md mx-auto py-4 px-4 relative">
+      {/* Dedicated loading page after payment, before confirmation */}
+      {showConfirmationLoading ? (
+        <div className="flex flex-col items-center justify-center min-h-[400px] w-full">
+          <div className="w-24 h-24 flex items-center justify-center mb-6">
+            <svg className="animate-spin w-16 h-16 text-orange-400" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            </svg>
+          </div>
+          <div className="text-2xl font-bold text-orange-500 mb-2">Finalizing your booking...</div>
+          <div className="text-gray-600 text-sm">Please wait while we confirm your payment and generate your tickets.</div>
+        </div>
+      ) : (
+        <>
+          {/* ...existing code... */}
+        </>
+      )}
       {/* Toast Popup */}
       {toast.show && (
         <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-pink-600 text-white px-6 py-3 rounded-lg shadow-lg text-base font-semibold animate-fade-in-out transition-all duration-300">
@@ -391,7 +420,7 @@ const ModernBookingModal = () => {
                 <h3 className="text-sm font-bold bg-gradient-to-r from-pink-600 to-orange-500 bg-clip-text text-transparent mb-1">
                   Book Your Ticket
                 </h3>
-                <p className="text-gray-600 text-xs mb-4">Malang Raas Dandiya 2025 • Sep 24 - Oct 1</p>
+                <p className="text-gray-600 text-xs mb-4">Malang Raas Dandiya 2025 • Sep 23 - Oct 1</p>
 
                 {/* Bulk Discount Banner */}
                 <div className="bg-gradient-to-r from-yellow-200 to-pink-100 rounded-lg shadow flex items-center justify-center relative mb-3 mt-6 py-2 px-3">
@@ -931,9 +960,9 @@ Book Again
               <div className="bg-white rounded-lg shadow p-3">
                 <span className="font-bold text-sm text-gray-800 block mb-2">Event Information</span>
                 <div className="text-xs text-gray-700 space-y-1">
-                  <div className="flex items-center gap-2"><span className="text-purple-400">📅</span> 4 August 2025</div>
+                  <div className="flex items-center gap-2"><span className="text-purple-400">📅</span> 23 Sept to 01 Oct, 2025</div>
                   <div className="flex items-center gap-2"><span className="text-orange-400">🕰️</span> 7:00 PM onwards</div>
-                  <div className="flex items-center gap-2"><span className="text-green-400">📍</span> Mumbai, Maharashtra</div>
+                  <div className="flex items-center gap-2"><span className="text-green-400">📍</span> Chh. Sambhajinagar, Maharashtra</div>
                 </div>
               </div>
             </div>

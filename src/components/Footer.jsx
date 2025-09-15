@@ -9,8 +9,7 @@ const Footer = () => {
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-4 items-start">
               <img
-                src="/images/dandiya-logo.png"
-                onError={(e) => { e.currentTarget.src = logo11; }}
+                src="/images/RaasLogo.PNG"
                 alt="Malang Ras Dandiya Logo"
                 className="w-14 h-14 rounded-lg shadow mb-2 sm:mb-0"
               />
@@ -26,19 +25,19 @@ const Footer = () => {
             <div className="space-y-2 text-sm text-gray-600">
               <div className="flex items-center gap-2">
                 <span>📅</span>
-                <span>22-30 September 2025</span>
+                <span>23 August 2025</span>
               </div>
               <div className="flex items-center gap-2">
-                <span>⏰</span>
-                <span>5:00 PM onwards</span>
+                <span>🕰️</span>
+                <span>7:00 PM onwards</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>📍</span>
-                <span>Chh. Sambhaji Nagar</span>
+                <span>Venue: Regal Lawns, Beed Bypass, Chhatrapati Sambhajinagar Maharashtra</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>💰</span>
-                <span>Starting from ₹200</span>
+                <span>Starting from ₹99</span>
               </div>
             </div>
           </div>
