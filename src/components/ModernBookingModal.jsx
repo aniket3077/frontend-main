@@ -52,16 +52,18 @@ const ModernBookingModal = () => {
   
   const TICKET_PRICING = {
     single: {
-      female: { base: 399, bulk_threshold: 6, bulk_price: 300 },
-      couple: { base: 699, bulk_threshold: 6, bulk_price: 300 },
-      kids: { base: 99, bulk_threshold: 6, bulk_price: 300 },
-      family: { base: 1300, bulk_threshold: 6, bulk_price: 300 },
-      male: { base: 499, bulk_threshold: 6, bulk_price: 300 }
+      female: { base: 399, bulk_threshold: 6, bulk_price: 350 },
+      couple: { base: 799, bulk_threshold: 6, bulk_price: 350 }, // Fixed price from 699 to 799
+      kids: { base: 99, bulk_threshold: 6, bulk_price: 350 },
+      family: { base: 1499, bulk_threshold: 6, bulk_price: 350 }, // Fixed price from 1300 to 1499
+      male: { base: 499, bulk_threshold: 6, bulk_price: 350 }
     },
     season: {
-      female: { base: 2499 },
+      female: { base: 1999 }, // Fixed from 2499 to 1999
       couple: { base: 3499 },
-      family: { base: 5999 }
+      family: { base: 5999 },
+      kids: { base: 299 }, // Added missing kids season pricing
+      male: { base: 2499 } // Added missing male season pricing
     }
   };
 
@@ -71,15 +73,17 @@ const ModernBookingModal = () => {
   const labelMap = {
     single: {
       female: 'Female - ₹399',
-      couple: 'Couple - ₹699',
+      couple: 'Couple - ₹799',
       kids: 'Kids (6-12 yrs) - ₹99',
-      family: 'Family (4 members) - ₹1300',
+      family: 'Family (4 members) - ₹1499',
       male: 'Male - ₹499'
     },
     season: {
-      female: 'Season Pass - Female (8 Days) - ₹2499',
+      female: 'Season Pass - Female (8 Days) - ₹1999',
       couple: 'Season Pass - Couple (8 Days) - ₹3499',
-      family: 'Season Pass - Family (4) (8 Days) - ₹5999'
+      family: 'Season Pass - Family (4) (8 Days) - ₹5999',
+      kids: 'Season Pass - Kids (8 Days) - ₹299',
+      male: 'Season Pass - Male (8 Days) - ₹2499'
     }
   };
 
@@ -89,21 +93,26 @@ const ModernBookingModal = () => {
     let discountApplied = false;
     let savings = 0;
     let details = [];
+    
     // Bulk discount: only for male+female single tickets
     let maleCount = Number(ticketData.passes.male) || 0;
     let femaleCount = Number(ticketData.passes.female) || 0;
     let bulkEligible = ticketType === 'single' && (maleCount + femaleCount) >= 6;
+    
     Object.entries(ticketData.passes).forEach(([type, count]) => {
       count = Number(count) || 0;
       if (!count) return;
+      
       const pricing = TICKET_PRICING[ticketType]?.[type];
       if (!pricing) return;
+      
       let unitPrice = pricing.base;
       let originalPrice = pricing.base;
       let typeDiscount = 0;
+      
       // 50% off for female on 23rd Sept (single day only)
       if (type === 'female' && ticketType === 'single' && isFemaleDiscountDay) {
-        unitPrice = Math.floor(pricing.base / 2);
+        unitPrice = Math.floor(pricing.base / 2); // 399 -> 199.5 -> 199
         typeDiscount = (pricing.base - unitPrice) * count;
         discountApplied = true;
         savings += typeDiscount;
@@ -114,11 +123,27 @@ const ModernBookingModal = () => {
         discountApplied = true;
         savings += typeDiscount;
       }
+      
       // No bulk discount for couple, kids, family
       totalAmount += unitPrice * count;
       details.push({ type, count, unitPrice, originalPrice, typeDiscount });
     });
-    return { totalAmount, discountApplied, savings, details, isFemaleDiscountDay, bulkEligible };
+    
+    // Calculate average unit price for display purposes
+    const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
+    const averageUnitPrice = totalTickets > 0 ? Math.round(totalAmount / totalTickets) : 0;
+    
+    return { 
+      totalAmount, 
+      discountApplied, 
+      savings, 
+      details, 
+      isFemaleDiscountDay, 
+      bulkEligible,
+      unitPrice: averageUnitPrice, // For backward compatibility
+      finalPrice: averageUnitPrice, // For backward compatibility
+      originalPrice: averageUnitPrice // For backward compatibility when no discount
+    };
   };
 
   const priceInfo = calculatePrice();
@@ -939,7 +964,7 @@ Book Again
                 <div className="space-y-1">
                   <div className="flex items-center justify-between bg-pink-50 rounded px-2 py-1">
                     <span className="font-medium text-gray-700 text-xs">{getDisplayLabel()}</span>
-                    <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-2 py-1 rounded">₹{priceInfo.finalPrice} each</span>
+                    <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-2 py-1 rounded">₹{priceInfo.unitPrice} each</span>
                   </div>
                   <div className="flex items-center justify-between bg-pink-50 rounded px-2 py-1">
                     <span className="font-medium text-gray-700 text-xs">Tickets</span>
