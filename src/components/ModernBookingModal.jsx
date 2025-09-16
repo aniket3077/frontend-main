@@ -47,23 +47,25 @@ const ModernBookingModal = () => {
   console.log('🔧 Debug: apiBase =', apiBase);
   console.log('🔧 Debug: import.meta.env =', import.meta.env);
 
-  // Malang Raas Dandiya 2025 - Updated Pricing Structure
+  // 🎉 Malang Raas Dandiya 2025 - Updated Pricing Structure (Matches Backend)
   const [ticketType, setTicketType] = useState('single'); // 'single' or 'season'
   
   const TICKET_PRICING = {
+    // 🎟 Single Day Entry Tickets
     single: {
-      female: { base: 399, bulk_threshold: 6, bulk_price: 399 },
-      couple: { base: 699, bulk_threshold: 6, bulk_price: 699 },
-      kids: { base: 99, bulk_threshold: 6, bulk_price: 99 },
-      family: { base: 1300, bulk_threshold: 6, bulk_price: 1300 },
-      male: { base: 499, bulk_threshold: 6, bulk_price: 499 } // Stag Male Are Not Allowed
+      female: { base: 399 },      // 👩 Female – ₹399
+      couple: { base: 699 },       // 👫 Couple – ₹699
+      kids: { base: 99 },          // 🧒 Kids (6-12 yrs) – ₹99
+      family: { base: 1300 },     // 👨‍👩‍👧‍👦 Family (4 members) – ₹1300
+      male: { base: 499 }         // 👨 Male – ₹499 (Stag Male Not Allowed)
     },
+    // 🔥 Season Pass Tickets (All 8 Days)
     season: {
-      female: { base: 2499 },
-      couple: { base: 3499 },
-      family: { base: 5999 }, // Family season pass (4 members) - fixed price
-      kids: { base: 792 }, // Kids season pass (99 * 8 days)
-      male: { base: 3992 } // Male season pass (499 * 8 days) - though not allowed
+      female: { base: 2499 },     // 👩 Female Season – ₹2499
+      couple: { base: 3499 },     // 👫 Couple Season – ₹3499
+      family: { base: 5999 },     // 👨‍👩‍👧‍👦 Family Season – ₹5999
+      kids: { base: 999 },         // 🧒 Kids Season Pass
+      male: { base: 2999 }        // 👨 Male Season (though not allowed)
     }
   };
 
@@ -82,8 +84,8 @@ const ModernBookingModal = () => {
       female: 'Season Pass - Female (8 Days) - ₹2499',
       couple: 'Season Pass - Couple (8 Days) - ₹3499',
       family: 'Season Pass - Family (4) (8 Days) - ₹5999',
-      kids: 'Season Pass - Kids (8 Days) - ₹792',
-      male: 'Season Pass - Male (8 Days) - ₹3992 (Stag Male Are Not Allowed)'
+      kids: 'Season Pass - Kids (8 Days) - ₹999',
+      male: 'Season Pass - Male (8 Days) - ₹2999 (Stag Male Are Not Allowed)'
     }
   };
 
@@ -316,9 +318,10 @@ const ModernBookingModal = () => {
   const handlePayment = async () => {
     setLoading(true);
     try {
-      // Do not send amount; server will compute from booking
+      // Send expected amount for validation to ensure frontend-backend-Razorpay consistency
       const orderRes = await axios.post(`${apiBase}/api/bookings/create-payment`, {
         booking_id: bookingId,
+        expected_amount: priceInfo.totalAmount,
         userEmail: userData.email,
         userName: userData.name,
       });
@@ -873,27 +876,33 @@ const ModernBookingModal = () => {
                   <div className="text-gray-600 font-medium">Event:</div>
                   <div className="text-right font-semibold text-gray-800">Malang Ras Dandiya 2025</div>
                   <div className="text-gray-600 font-medium">Date:</div>
-                  <div className="text-right font-semibold text-gray-800">{ticketData.booking_date}</div>
-                  <div className="text-gray-600 font-medium">Pass Type:</div>
-                  <div className="text-right font-semibold text-gray-800">{getDisplayLabel()}</div>
-
-                  <div className="text-gray-600 font-medium">Tickets:</div>
-                  <div className="text-right font-semibold text-gray-800">{getTotalTickets()}</div>
-                  <div className="text-gray-600 font-medium">Price per ticket:</div>
-                  <div className="text-right font-semibold text-gray-800">
-                    {priceInfo.discountApplied ? (
-                      <span>
-                        <span className="line-through text-gray-500">₹{priceInfo.originalPrice}</span>{' '}
-                        <span className="text-green-600 font-bold">₹{priceInfo.unitPrice}</span>
-                      </span>
-                    ) : (
-                      `₹${priceInfo.unitPrice}`
-                    )}
-                  </div>
+                  <div className="text-right font-semibold text-gray-800">{ticketType === 'season' ? 'Season Pass (All 8 Days)' : ticketData.booking_date}</div>
+                  
+                  {/* Show each pass type breakdown instead of single "Pass Type" */}
+                  <div className="col-span-2 border-t border-gray-200 my-2"></div>
+                  <div className="text-gray-600 font-medium col-span-2">Ticket Breakdown:</div>
+                  
+                  {priceInfo.details.map(({ type, count, unitPrice, originalPrice, typeDiscount }) => (
+                    count > 0 && (
+                      <React.Fragment key={type}>
+                        <div className="text-gray-600 font-medium">{labelMap[ticketType][type]} × {count}:</div>
+                        <div className="text-right font-semibold text-gray-800">
+                          {typeDiscount > 0 ? (
+                            <span>
+                              <span className="line-through text-gray-500">₹{originalPrice * count}</span>{' '}
+                              <span className="text-green-600 font-bold">₹{unitPrice * count}</span>
+                            </span>
+                          ) : (
+                            `₹${unitPrice * count}`
+                          )}
+                        </div>
+                      </React.Fragment>
+                    )
+                  ))}
 
                   {priceInfo.discountApplied && (
                     <>
-                      <div className="text-green-600 font-medium">Bulk Discount:</div>
+                      <div className="text-green-600 font-medium">Total Savings:</div>
                       <div className="text-right font-semibold text-green-600">-₹{priceInfo.savings}</div>
                     </>
                   )}

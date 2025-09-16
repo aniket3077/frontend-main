@@ -95,7 +95,7 @@ const PricingPolicy = () => {
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👨 Male</span>
-                    <span className="font-bold text-red-600">₹3992 (Not Allowed)</span>
+                    <span className="font-bold text-red-600">₹2999 (Not Allowed)</span>
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👫 Couple</span>
@@ -105,7 +105,7 @@ const PricingPolicy = () => {
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>🧒 Kids (6-12 years)</span>
-                    <span className="font-bold text-green-600">₹792</span>
+                    <span className="font-bold text-green-600">₹999</span>
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👨‍👩‍👧‍👦 Family (4 members)</span>
@@ -163,7 +163,7 @@ const PricingPolicy = () => {
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2">•</span>
-                  <span><strong>Group bookings</strong> qualify for bulk discounts when applicable conditions are met</span>
+                  <span><strong>Group bookings</strong> are welcome with standard pricing for all ticket types</span>
                 </li>
                 <li className="flex items-start">
                   <span className="text-blue-500 mr-2">•</span>
@@ -231,7 +231,7 @@ const PricingPolicy = () => {
                 <li>✅ Transparent pricing with all taxes included</li>
                 <li>✅ Price protection - no price increases after booking</li>
                 <li>✅ Equal treatment - same price for same ticket type</li>
-                <li>✅ Clear discount eligibility criteria</li>
+                <li>✅ Clear pricing structure and categories</li>
               </ul>
             </div>
           </section>
@@ -240,7 +240,7 @@ const PricingPolicy = () => {
           <section className="bg-gray-50 p-6 rounded-lg">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Pricing Questions?</h2>
             <p className="mb-4">
-              If you have any questions about our pricing, discounts, or payment options, please don't hesitate to contact us:
+              If you have any questions about our pricing structure or payment options, please don't hesitate to contact us:
             </p>
             
             <div className="grid md:grid-cols-2 gap-6">

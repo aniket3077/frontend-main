@@ -85,58 +85,70 @@ class PaymentService {
     }
   }
 
-  // Calculate pricing based on pass type and duration - with discount support
+  // 🎉 Calculate pricing based on pass type and duration - Updated to match backend exactly
   calculatePricing(passType, passDuration, numTickets, bookingDate = null, ticketBreakdown = null) {
     const pricing = {
       daily: {
-        female: 399,
-        couple: 699,
-        kids: 99,
-        family: 1300,
-        male: 499 // Stag Male Are Not Allowed - this price shown but booking should be restricted
+        female: { base: 399 },      // 👩 Female – ₹399
+        couple: { base: 699 },       // 👫 Couple – ₹699
+        kids: { base: 99 },          // 🧒 Kids (6-12 yrs) – ₹99
+        family: { base: 1300 },     // 👨‍👩‍👧‍👦 Family (4 members) – ₹1300
+        male: { base: 499 }         // 👨 Male – ₹499 (Stag Male Not Allowed)
       },
       season: {
-        female: 2499,
-        couple: 3499,
-        family: 5999, // Family season pass price - keeping at 5999 for consistency
-        kids: 99 * 8, // Kids season pass (8 days)
-        male: 499 * 8 // Male season pass (though stag males not allowed)
+        female: { base: 2499 },     // 👩 Female Season – ₹2499
+        couple: { base: 3499 },     // 👫 Couple Season – ₹3499
+        family: { base: 5999 },     // 👨‍👩‍👧‍👦 Family Season – ₹5999
+        kids: { base: 999 },         // 🧒 Kids Season Pass
+        male: { base: 2999 }        // 👨 Male Season (though not allowed)
       }
     };
 
-    const prices = pricing[passDuration] || pricing.daily;
-    const basePrice = prices[passType] || 0;
+    const priceObj = pricing[passDuration]?.[passType] || pricing.daily?.[passType];
+    if (!priceObj) return { basePrice: 0, finalPrice: 0, totalAmount: 0, discountApplied: false };
     
-    // If ticket breakdown is provided, calculate based on all tickets - NO DISCOUNTS
+    const quantity = Math.max(1, parseInt(numTickets) || 1);
+    
+    // Fixed pricing - no bulk discounts
+    let pricePerTicket = priceObj.base;
+    let discountApplied = false;
+    
+    // If ticket breakdown is provided, calculate based on all tickets
     if (ticketBreakdown) {
       let totalAmount = 0;
       
-      // All discounts are disabled - calculate at regular prices
+      // Calculate for each ticket type
       Object.entries(ticketBreakdown).forEach(([type, count]) => {
-        const typePrice = prices[type] || 0;
-        let unitPrice = typePrice; // Always use regular price
+        const typePrice = pricing[passDuration]?.[type] || pricing.daily?.[type];
+        if (!typePrice || count <= 0) return;
         
-        // No discounts applied - all tickets sold at base price
-        totalAmount += unitPrice * count;
+        const typeQuantity = parseInt(count);
+        const unitPrice = typePrice.base;
+        
+        totalAmount += unitPrice * typeQuantity;
       });
       
-      return totalAmount;
+      return {
+        basePrice: totalAmount,
+        finalPrice: totalAmount,
+        totalAmount: totalAmount,
+        discountApplied: false,
+        pricePerTicket: 0 // Not applicable for mixed bookings
+      };
     }
 
-    // Original logic for single pass type
-    // For couple pass, price is fixed for 2 people
-    if (passType === 'couple') {
-      return basePrice;
-    }
+    // Calculate total amount for single pass type
+    const totalAmount = pricePerTicket * quantity;
 
-    // For family pass, calculate per member price
-    if (passType === 'family') {
-      const pricePerMember = basePrice / 4; // Base price is for 4 members
-      return Math.round(pricePerMember * numTickets);
-    }
-
-    // For other pass types, multiply by number of tickets
-    return basePrice * numTickets;
+    return {
+      basePrice: priceObj.base,
+      finalPrice: pricePerTicket,
+      totalAmount: totalAmount,
+      discountApplied: false,
+      discountAmount: 0,
+      pricePerTicket: pricePerTicket,
+      quantity: quantity
+    };
   }
 
   // Validate payment data
