@@ -73,7 +73,7 @@ const ModernBookingModal = () => {
   const labelMap = {
     single: {
       female: 'Female - ₹399',
-      couple: 'Couple - ₹799',
+      couple: 'Couple - ₹699',
       kids: 'Kids (6-12 yrs) - ₹99',
       family: 'Family (4 members) - ₹1499',
       male: 'Male - ₹499'
