@@ -53,7 +53,7 @@ const ModernBookingModal = () => {
   const TICKET_PRICING = {
     single: {
       female: { base: 399, bulk_threshold: 6, bulk_price: 350 },
-      couple: { base: 799, bulk_threshold: 6, bulk_price: 350 }, // Fixed price from 699 to 799
+      couple: { base: 699, bulk_threshold: 6, bulk_price: 350 }, // Fixed price from 699 to 799
       kids: { base: 99, bulk_threshold: 6, bulk_price: 350 },
       family: { base: 1499, bulk_threshold: 6, bulk_price: 350 }, // Fixed price from 1300 to 1499
       male: { base: 499, bulk_threshold: 6, bulk_price: 350 }

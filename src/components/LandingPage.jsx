@@ -144,7 +144,7 @@ const LandingPage = () => {
         </li>
         <li className="flex items-center justify-between border-b py-2">
           <span>👫 Couple</span>
-          <span className="font-semibold">₹799</span>
+          <span className="font-semibold">₹699</span>
         </li>
         <li className="flex items-center justify-between border-b py-2">
           <span>🧒 Kids (6 to 12 yrs)</span>
