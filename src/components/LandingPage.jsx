@@ -62,7 +62,7 @@ const LandingPage = () => {
             <li className="flex items-center gap-2"><span role="img" aria-label="calendar">📅</span> 23 September 2025</li>
             <li className="flex items-center gap-2"><span role="img" aria-label="clock">⏰</span> 7:00 PM onwards</li>
             <li className="flex items-center gap-2"><span role="img" aria-label="location">📍</span> Chh. Sambhaji Nagar</li>
-            <li className="flex items-center gap-2"><span role="img" aria-label="money">💰</span> Starting from ₹5</li>
+            <li className="flex items-center gap-2"><span role="img" aria-label="money">💰</span> Starting from ₹99</li>
           </ul>
         </div>
         <h2 className="text-5xl font-extrabold text-center mb-4 bg-gradient-to-r from-orange-500 via-pink-500 to-yellow-400 bg-clip-text text-transparent drop-shadow-lg animate-pulse">

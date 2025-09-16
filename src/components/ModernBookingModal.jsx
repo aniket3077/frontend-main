@@ -67,7 +67,7 @@ const ModernBookingModal = () => {
     }
   };
 
-  // Helper: is 23rd selected?
+  // Helper: September 23rd female discount
   const isFemaleDiscountDay = ticketData.booking_date === "2025-09-23";
 
   const labelMap = {
@@ -87,15 +87,12 @@ const ModernBookingModal = () => {
     }
   };
 
-  // Calculate pricing for all pass types - DISCOUNTS DISABLED
+  // Calculate pricing for all pass types - Female 50% off on Sept 23rd only
   const calculatePrice = () => {
     let totalAmount = 0;
     let discountApplied = false;
     let savings = 0;
     let details = [];
-    
-    // NOTE: Bulk discount and special discounts are currently disabled
-    // All tickets are sold at base price
     
     Object.entries(ticketData.passes).forEach(([type, count]) => {
       count = Number(count) || 0;
@@ -104,29 +101,60 @@ const ModernBookingModal = () => {
       const pricing = TICKET_PRICING[ticketType]?.[type];
       if (!pricing) return;
       
-      let unitPrice = pricing.base; // Always use base price - no discounts
+      let unitPrice = pricing.base;
       let originalPrice = pricing.base;
-      let typeDiscount = 0; // No discounts applied
+      let typeDiscount = 0;
       
-      // All tickets sold at regular price - no discounts available
+      // Apply 50% discount for female tickets on September 23rd only
+      if (type === 'female' && ticketType === 'single' && isFemaleDiscountDay) {
+        unitPrice = Math.floor(pricing.base / 2); // 399 -> 199
+        typeDiscount = (pricing.base - unitPrice) * count;
+        discountApplied = true;
+        savings += typeDiscount;
+      }
+      
       totalAmount += unitPrice * count;
       details.push({ type, count, unitPrice, originalPrice, typeDiscount });
     });
     
-    // Calculate average unit price for display purposes
+    // Calculate total tickets and get base pricing for display
     const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
-    const averageUnitPrice = totalTickets > 0 ? Math.round(totalAmount / totalTickets) : 0;
+    
+    // For display purposes, calculate a representative price based on selected tickets
+    let displayUnitPrice = 0;
+    let displayOriginalPrice = 0;
+    
+    if (totalTickets > 0) {
+      // Use weighted average for display prices
+      let totalOriginalValue = 0;
+      Object.entries(ticketData.passes).forEach(([type, count]) => {
+        count = Number(count) || 0;
+        if (!count) return;
+        const pricing = TICKET_PRICING[ticketType]?.[type];
+        if (pricing) {
+          totalOriginalValue += pricing.base * count;
+        }
+      });
+      
+      displayUnitPrice = Math.round(totalAmount / totalTickets);
+      displayOriginalPrice = Math.round(totalOriginalValue / totalTickets);
+    } else {
+      // Default to female pricing when no tickets selected
+      const femalePrice = TICKET_PRICING[ticketType]?.female?.base || 399;
+      displayUnitPrice = isFemaleDiscountDay ? Math.floor(femalePrice / 2) : femalePrice;
+      displayOriginalPrice = femalePrice;
+    }
     
     return { 
       totalAmount, 
       discountApplied, 
       savings, 
       details, 
-      isFemaleDiscountDay, 
-      bulkEligible: false, // Discounts disabled
-      unitPrice: averageUnitPrice, // For backward compatibility
-      finalPrice: averageUnitPrice, // For backward compatibility
-      originalPrice: averageUnitPrice // For backward compatibility when no discount
+      isFemaleDiscountDay,
+      bulkEligible: false, // Bulk discounts disabled
+      unitPrice: displayUnitPrice,
+      finalPrice: displayUnitPrice,
+      originalPrice: displayOriginalPrice
     };
   };
 
@@ -197,7 +225,9 @@ const ModernBookingModal = () => {
         ticket_type: ticketType,
         total_amount: totalAmount, // Add total amount for backend validation
         pass_duration: ticketType === 'season' ? 'season' : 'daily', // Map ticket_type to pass_duration
-        // Add detailed breakdown for backend reference
+        // Send passes object for backend multiple pass type handling
+        passes: Object.fromEntries(passesToBook),
+        // Keep ticket_breakdown for compatibility
         ticket_breakdown: Object.fromEntries(passesToBook)
       };
       console.log('🔧 Debug: Payload:', payload);
@@ -567,24 +597,14 @@ const ModernBookingModal = () => {
                     {Object.entries(labelMap[ticketType]).map(([key, label]) => {
                       // For season pass, only allow female, couple, family
                       if (ticketType === 'season' && !['female', 'couple', 'family'].includes(key)) return null;
-                      let showBulk = false;
-                      if (ticketType === 'single' && (key === 'male' || key === 'female')) {
-                        const maleCount = Number(ticketData.passes.male) || 0;
-                        const femaleCount = Number(ticketData.passes.female) || 0;
-                        showBulk = (maleCount + femaleCount) >= 6;
-                      }
+                      
                       return (
                         <div key={key} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 mb-1 border border-gray-200">
                           <span className="font-medium text-gray-700 text-sm">
                             {key === 'female' && ticketType === 'single' && isFemaleDiscountDay ? (
                               <>
-                                <span className="line-through text-gray-400 mr-1">₹5</span>
-                                <span className="text-pink-600 font-bold">₹3</span> <span className="ml-1">Female</span>
-                              </>
-                            ) : showBulk && (key === 'male' || key === 'female') ? (
-                              <>
-                                <span className="line-through text-gray-400 mr-1">₹{TICKET_PRICING.single[key].base}</span>
-                                <span className="text-green-700 font-bold">₹5</span> <span className="ml-1">{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                                <span className="line-through text-gray-400 mr-1">₹399</span>
+                                <span className="text-pink-600 font-bold">₹199</span> <span className="ml-1">Female (50% OFF)</span>
                               </>
                             ) : label}
                           </span>
@@ -641,12 +661,9 @@ const ModernBookingModal = () => {
                       <span className="text-base font-bold text-gray-700">Grand Total</span>
                       <span className="text-xl font-extrabold text-gray-900">₹{priceInfo.totalAmount}</span>
                     </div>
-                    {/* Female 50% discount message */}
+                    {/* Female 50% discount message for September 23rd */}
                     {priceInfo.isFemaleDiscountDay && ticketType === 'single' && (
-                      <div className="text-pink-600 text-xs font-semibold mt-1">Special: 50% OFF for Female tickets on 23rd September!</div>
-                    )}
-                    {priceInfo.bulkEligible && !priceInfo.isFemaleDiscountDay && (
-                      <div className="text-green-600 text-xs font-semibold mt-1">Bulk discount applied! You save ₹{priceInfo.savings}</div>
+                      <div className="text-pink-600 text-xs font-semibold mt-1">🎉 Special: 50% OFF for Female tickets on 23rd September!</div>
                     )}
                   </div>
                 </div>
