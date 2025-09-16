@@ -89,12 +89,16 @@ const ModernBookingModal = () => {
     }
   };
 
-  // Calculate pricing for all pass types - Female 50% off on Sept 23rd only
+  // Calculate pricing for all pass types - with bulk discounts and female discount
   const calculatePrice = () => {
     let totalAmount = 0;
     let discountApplied = false;
     let savings = 0;
     let details = [];
+    
+    // Calculate total tickets first for bulk discount eligibility
+    const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
+    const isBulkDiscount = totalTickets >= 6;
     
     Object.entries(ticketData.passes).forEach(([type, count]) => {
       count = Number(count) || 0;
@@ -107,8 +111,15 @@ const ModernBookingModal = () => {
       let originalPrice = pricing.base;
       let typeDiscount = 0;
       
-      // Apply 50% discount for female tickets on September 23rd only
-      if (type === 'female' && ticketType === 'single' && isFemaleDiscountDay) {
+      // Apply bulk discount first (6+ tickets = ₹350 each)
+      if (isBulkDiscount) {
+        unitPrice = 350;
+        typeDiscount = (pricing.base - 350) * count;
+        discountApplied = true;
+        savings += typeDiscount;
+      }
+      // Apply 50% discount for female tickets on September 23rd only (if no bulk discount)
+      else if (type === 'female' && ticketType === 'single' && isFemaleDiscountDay) {
         unitPrice = Math.floor(pricing.base / 2); // 399 -> 199
         typeDiscount = (pricing.base - unitPrice) * count;
         discountApplied = true;
@@ -119,27 +130,39 @@ const ModernBookingModal = () => {
       details.push({ type, count, unitPrice, originalPrice, typeDiscount });
     });
     
-    // Calculate total tickets and get base pricing for display
-    const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
-    
     // For display purposes, calculate a representative price based on selected tickets
     let displayUnitPrice = 0;
     let displayOriginalPrice = 0;
     
     if (totalTickets > 0) {
-      // Use weighted average for display prices
-      let totalOriginalValue = 0;
-      Object.entries(ticketData.passes).forEach(([type, count]) => {
-        count = Number(count) || 0;
-        if (!count) return;
-        const pricing = TICKET_PRICING[ticketType]?.[type];
-        if (pricing) {
-          totalOriginalValue += pricing.base * count;
-        }
-      });
-      
-      displayUnitPrice = Math.round(totalAmount / totalTickets);
-      displayOriginalPrice = Math.round(totalOriginalValue / totalTickets);
+      if (isBulkDiscount) {
+        displayUnitPrice = 350;
+        // Use weighted average for original price display
+        let totalOriginalValue = 0;
+        Object.entries(ticketData.passes).forEach(([type, count]) => {
+          count = Number(count) || 0;
+          if (!count) return;
+          const pricing = TICKET_PRICING[ticketType]?.[type];
+          if (pricing) {
+            totalOriginalValue += pricing.base * count;
+          }
+        });
+        displayOriginalPrice = Math.round(totalOriginalValue / totalTickets);
+      } else {
+        // Use weighted average for display prices
+        let totalOriginalValue = 0;
+        Object.entries(ticketData.passes).forEach(([type, count]) => {
+          count = Number(count) || 0;
+          if (!count) return;
+          const pricing = TICKET_PRICING[ticketType]?.[type];
+          if (pricing) {
+            totalOriginalValue += pricing.base * count;
+          }
+        });
+        
+        displayUnitPrice = Math.round(totalAmount / totalTickets);
+        displayOriginalPrice = Math.round(totalOriginalValue / totalTickets);
+      }
     } else {
       // Default to female pricing when no tickets selected
       const femalePrice = TICKET_PRICING[ticketType]?.female?.base || 399;
@@ -153,7 +176,8 @@ const ModernBookingModal = () => {
       savings, 
       details, 
       isFemaleDiscountDay,
-      bulkEligible: false, // Bulk discounts disabled
+      bulkEligible: isBulkDiscount, // Now properly calculated
+      totalTickets,
       unitPrice: displayUnitPrice,
       finalPrice: displayUnitPrice,
       originalPrice: displayOriginalPrice
@@ -479,7 +503,7 @@ const ModernBookingModal = () => {
                   <span className="flex items-center text-lg font-bold">
                     <svg className="w-6 h-6 mr-2 text-purple-800" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2.08 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     <span className="text-orange-700">Buy 6 or more tickets</span>
-                    <span className="text-green-700 ml-2">& pay just ₹5/person</span>
+                    <span className="text-green-700 ml-2">& pay just ₹350/person</span>
                   </span>
                 </div>
               </div>

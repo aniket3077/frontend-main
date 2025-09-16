@@ -43,7 +43,7 @@ const TermsAndConditions = () => {
             <ul className="list-disc pl-6 space-y-2">
               <li>All ticket prices are in Indian Rupees (₹) and include applicable taxes</li>
               <li>Tickets are non-transferable and non-refundable except as specified in our Refund Policy</li>
-              <li>Bulk discounts apply for purchases of 6 or more male/female tickets</li>
+              <li>Bulk discounts apply for purchases of 6 or more tickets - pay just ₹350 per ticket</li>
               <li>Special discounts may be available for specific dates as announced</li>
               <li>Payment must be completed to secure your booking</li>
               <li>We reserve the right to cancel bookings with incomplete payments</li>
