@@ -62,7 +62,7 @@ const LandingPage = () => {
             <li className="flex items-center gap-2"><span role="img" aria-label="calendar">📅</span> 23 September 2025</li>
             <li className="flex items-center gap-2"><span role="img" aria-label="clock">⏰</span> 7:00 PM onwards</li>
             <li className="flex items-center gap-2"><span role="img" aria-label="location">📍</span> Chh. Sambhaji Nagar</li>
-            <li className="flex items-center gap-2"><span role="img" aria-label="money">💰</span> Starting from ₹99</li>
+            <li className="flex items-center gap-2"><span role="img" aria-label="money">💰</span> Starting from ₹5</li>
           </ul>
         </div>
         <h2 className="text-5xl font-extrabold text-center mb-4 bg-gradient-to-r from-orange-500 via-pink-500 to-yellow-400 bg-clip-text text-transparent drop-shadow-lg animate-pulse">
@@ -93,7 +93,7 @@ const LandingPage = () => {
           <div className="bg-gradient-to-r from-yellow-200 via-orange-100 to-pink-100 border-l-4 border-yellow-400 rounded shadow px-6 py-3 max-w-xl w-full text-center animate-bounce relative mb-4">
             <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-yellow-400 text-white text-xs font-bold px-4 py-1 rounded-full shadow-md border-2 border-white z-10" style={{letterSpacing:'0.05em'}}>SPECIAL OFFER</div>
             <span className="text-lg font-bold text-orange-700 tracking-wide">
-              👥 Buy 6 or more tickets  <span className="text-green-700">& pay just 350/person</span>
+              👥 Buy 6 or more tickets  <span className="text-green-700">& pay just ₹5/person</span>
             </span>
           </div>
           {/* Group Discount Info Box */}
@@ -140,23 +140,23 @@ const LandingPage = () => {
       <ul className="space-y-3 text-gray-700 text-base">
         <li className="flex items-center justify-between border-b py-2">
           <span>👩 Female</span>
-          <span className="font-semibold">₹399</span>
+          <span className="font-semibold">₹5</span>
         </li>
         <li className="flex items-center justify-between border-b py-2">
           <span>👫 Couple</span>
-          <span className="font-semibold">₹699</span>
+          <span className="font-semibold">₹5</span>
         </li>
         <li className="flex items-center justify-between border-b py-2">
           <span>🧒 Kids (6 to 12 yrs)</span>
-          <span className="font-semibold">₹99</span>
+          <span className="font-semibold">₹5</span>
         </li>
         <li className="flex items-center justify-between border-b py-2">
           <span>👨‍👩‍👧‍👦 Family (4 members)</span>
-          <span className="font-semibold">₹1499</span>
+          <span className="font-semibold">₹5</span>
         </li>
         <li className="flex items-center justify-between py-2">
           <span>👨 Male <span className="text-xs text-red-600 font-bold ml-2">(Stag Male Are Not Allowed)</span></span>
-          <span className="font-semibold">₹499</span>
+          <span className="font-semibold">₹5</span>
         </li>
       </ul>
       {/* No general note here, only on booking card */}
@@ -168,13 +168,13 @@ const LandingPage = () => {
         <span role="img" aria-label="ticket">🎫</span> Season Pass
       </h3>
       <ul className="space-y-3 text-gray-700 text-base">
-        <li className="flex items-center justify-between border-b py-2"><span>👩 Female</span><span className="font-semibold">₹1999</span></li>
-        <li className="flex items-center justify-between border-b py-2"><span>👫 Couple</span><span className="font-semibold">₹3499</span></li>
-        <li className="flex items-center justify-between border-b py-2"><span>🧒 Kids (6 to 12 yrs)</span><span className="font-semibold">₹299</span></li>
-        <li className="flex items-center justify-between border-b py-2"><span>👨‍👩‍👧‍👦 Family (4 members)</span><span className="font-semibold">₹5999</span></li>
+        <li className="flex items-center justify-between border-b py-2"><span>👩 Female</span><span className="font-semibold">₹5</span></li>
+        <li className="flex items-center justify-between border-b py-2"><span>👫 Couple</span><span className="font-semibold">₹5</span></li>
+        <li className="flex items-center justify-between border-b py-2"><span>🧒 Kids (6 to 12 yrs)</span><span className="font-semibold">₹5</span></li>
+        <li className="flex items-center justify-between border-b py-2"><span>👨‍👩‍👧‍👦 Family (4 members)</span><span className="font-semibold">₹5</span></li>
         <li className="flex items-center justify-between py-2">
           <span>👨 Male</span>
-          <span className="font-semibold">₹2499</span>
+          <span className="font-semibold">₹5</span>
         </li>
       </ul>
       <p className="text-sm text-yellow-700 mt-3">Valid for all 8 days. <span className="font-semibold">Best value for regulars!</span></p>

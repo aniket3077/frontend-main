@@ -52,18 +52,18 @@ const ModernBookingModal = () => {
   
   const TICKET_PRICING = {
     single: {
-      female: { base: 399, bulk_threshold: 6, bulk_price: 350 },
-      couple: { base: 699, bulk_threshold: 6, bulk_price: 350 }, // Fixed price from 699 to 799
-      kids: { base: 99, bulk_threshold: 6, bulk_price: 350 },
-      family: { base: 1499, bulk_threshold: 6, bulk_price: 350 }, // Fixed price from 1300 to 1499
-      male: { base: 499, bulk_threshold: 6, bulk_price: 350 }
+      female: { base: 5, bulk_threshold: 6, bulk_price: 5 },
+      couple: { base: 5, bulk_threshold: 6, bulk_price: 5 }, // Fixed price from 699 to 799
+      kids: { base: 5, bulk_threshold: 6, bulk_price: 5 },
+      family: { base: 5, bulk_threshold: 6, bulk_price: 5 }, // Fixed price from 1300 to 1499
+      male: { base: 5, bulk_threshold: 6, bulk_price: 5 }
     },
     season: {
-      female: { base: 1999 }, // Fixed from 2499 to 1999
-      couple: { base: 3499 },
-      family: { base: 5999 },
-      kids: { base: 299 }, // Added missing kids season pricing
-      male: { base: 2499 } // Added missing male season pricing
+      female: { base: 5 }, // Fixed from 2499 to 1999
+      couple: { base: 5 },
+      family: { base: 5 },
+      kids: { base: 5 }, // Added missing kids season pricing
+      male: { base: 5 } // Added missing male season pricing
     }
   };
 
@@ -72,18 +72,18 @@ const ModernBookingModal = () => {
 
   const labelMap = {
     single: {
-      female: 'Female - ₹399',
-      couple: 'Couple - ₹699',
-      kids: 'Kids (6-12 yrs) - ₹99',
-      family: 'Family (4 members) - ₹1499',
-      male: 'Male - ₹499'
+      female: 'Female - ₹5',
+      couple: 'Couple - ₹5',
+      kids: 'Kids (6-12 yrs) - ₹5',
+      family: 'Family (4 members) - ₹5',
+      male: 'Male - ₹5'
     },
     season: {
-      female: 'Season Pass - Female (8 Days) - ₹1999',
-      couple: 'Season Pass - Couple (8 Days) - ₹3499',
-      family: 'Season Pass - Family (4) (8 Days) - ₹5999',
-      kids: 'Season Pass - Kids (8 Days) - ₹299',
-      male: 'Season Pass - Male (8 Days) - ₹2499'
+      female: 'Season Pass - Female (8 Days) - ₹5',
+      couple: 'Season Pass - Couple (8 Days) - ₹5',
+      family: 'Season Pass - Family (4) (8 Days) - ₹5',
+      kids: 'Season Pass - Kids (8 Days) - ₹5',
+      male: 'Season Pass - Male (8 Days) - ₹5'
     }
   };
 
@@ -118,7 +118,7 @@ const ModernBookingModal = () => {
         savings += typeDiscount;
       // Bulk discount for male/female only, combined 6+
       } else if (bulkEligible && (type === 'male' || type === 'female')) {
-        unitPrice = 350;
+        unitPrice = 5;
         typeDiscount = (originalPrice - unitPrice) * count;
         discountApplied = true;
         savings += typeDiscount;
@@ -466,7 +466,7 @@ const ModernBookingModal = () => {
                   <span className="flex items-center text-lg font-bold">
                     <svg className="w-6 h-6 mr-2 text-purple-800" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2.08 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                     <span className="text-orange-700">Buy 6 or more tickets</span>
-                    <span className="text-green-700 ml-2">& pay just 350/person</span>
+                    <span className="text-green-700 ml-2">& pay just ₹5/person</span>
                   </span>
                 </div>
               </div>
@@ -598,13 +598,13 @@ const ModernBookingModal = () => {
                           <span className="font-medium text-gray-700 text-sm">
                             {key === 'female' && ticketType === 'single' && isFemaleDiscountDay ? (
                               <>
-                                <span className="line-through text-gray-400 mr-1">₹399</span>
-                                <span className="text-pink-600 font-bold">₹200</span> <span className="ml-1">Female</span>
+                                <span className="line-through text-gray-400 mr-1">₹5</span>
+                                <span className="text-pink-600 font-bold">₹3</span> <span className="ml-1">Female</span>
                               </>
                             ) : showBulk && (key === 'male' || key === 'female') ? (
                               <>
                                 <span className="line-through text-gray-400 mr-1">₹{TICKET_PRICING.single[key].base}</span>
-                                <span className="text-green-700 font-bold">₹350</span> <span className="ml-1">{key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                                <span className="text-green-700 font-bold">₹5</span> <span className="ml-1">{key.charAt(0).toUpperCase() + key.slice(1)}</span>
                               </>
                             ) : label}
                           </span>

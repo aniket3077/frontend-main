@@ -89,18 +89,18 @@ class PaymentService {
   calculatePricing(passType, passDuration, numTickets, bookingDate = null, ticketBreakdown = null) {
     const pricing = {
       daily: {
-        female: 399,
-        couple: 799, // Updated from 699 to match frontend
-        kids: 99,
-        family: 1499, // Updated from 1300 to match frontend
-        male: 499 // Added male pricing
+        female: 5,
+        couple: 5, // Updated from 699 to match frontend
+        kids: 5,
+        family: 5, // Updated from 1300 to match frontend
+        male: 5 // Added male pricing
       },
       season: {
-        female: 1999, // Updated from 2499 to match frontend
-        couple: 3499,
-        family: 5999,
-        kids: 299, // Added kids season pricing
-        male: 2499 // Added male season pricing
+        female: 5, // Updated from 2499 to match frontend
+        couple: 5,
+        family: 5,
+        kids: 5, // Added kids season pricing
+        male: 5 // Added male season pricing
       }
     };
 
@@ -129,7 +129,7 @@ class PaymentService {
           unitPrice = Math.floor(typePrice / 2);
         } else if (bulkEligible && (type === 'male' || type === 'female')) {
           // Bulk discount for male/female
-          unitPrice = 350;
+          unitPrice = 5;
         }
         
         totalAmount += unitPrice * count;
