@@ -163,6 +163,11 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import LandingPage from "./components/LandingPage";
 import ModernBookingModal from "./components/ModernBookingModal";
+import TermsAndConditions from "./components/TermsAndConditions";
+import PricingPolicy from "./components/PricingPolicy";
+import CancellationRefundPolicy from "./components/CancellationRefundPolicy";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import ShippingPolicy from "./components/ShippingPolicy";
 
 function App() {
   return (
@@ -176,6 +181,11 @@ function App() {
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/booking" element={<ModernBookingModal />} />
+              <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+              <Route path="/pricing-policy" element={<PricingPolicy />} />
+              <Route path="/cancellation-refund-policy" element={<CancellationRefundPolicy />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/shipping-policy" element={<ShippingPolicy />} />
             </Routes>
           </div>
         </main>

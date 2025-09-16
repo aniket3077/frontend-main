@@ -37,7 +37,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span>💰</span>
-                <span>Starting from ₹99</span>
+                <span>Starting from ₹5</span>
               </div>
             </div>
           </div>
@@ -61,12 +61,34 @@ const Footer = () => {
           </div>
         </div>
         <hr className="my-6" />
+        
+        {/* Policy Links */}
+        <div className="mb-6">
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 text-sm">
+            <a href="/about-us" className="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+              About Us
+            </a>
+            <a href="/terms-and-conditions" className="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+              Terms & Conditions
+            </a>
+            <a href="/pricing-policy" className="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+              Pricing Policy
+            </a>
+            <a href="/cancellation-refund-policy" className="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+              Cancellation & Refund
+            </a>
+            <a href="/privacy-policy" className="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+              Privacy Policy
+            </a>
+          </div>
+        </div>
+        
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
           <p className="text-gray-500 text-sm">
             © 2025 Malang Ras Dandiya. All rights reserved.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-sm text-gray-500">
-            <span>Powered by Malang Ras Dandiya</span>
+            <span>Service provide by FARMSEASY TECH SOLUTIONS PVT LTD</span>
             <span className="hidden sm:inline">•</span>
             <span>Secure Payments</span>
             <span className="hidden sm:inline">•</span>
