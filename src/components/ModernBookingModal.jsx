@@ -52,18 +52,18 @@ const ModernBookingModal = () => {
   
   const TICKET_PRICING = {
     single: {
-      female: { base: 5, bulk_threshold: 6, bulk_price: 5 },
-      couple: { base: 5, bulk_threshold: 6, bulk_price: 5 }, // Fixed price from 699 to 799
-      kids: { base: 5, bulk_threshold: 6, bulk_price: 5 },
-      family: { base: 5, bulk_threshold: 6, bulk_price: 5 }, // Fixed price from 1300 to 1499
-      male: { base: 5, bulk_threshold: 6, bulk_price: 5 }
+      female: { base: 399, bulk_threshold: 6, bulk_price: 399 },
+      couple: { base: 699, bulk_threshold: 6, bulk_price: 699 },
+      kids: { base: 99, bulk_threshold: 6, bulk_price: 99 },
+      family: { base: 1300, bulk_threshold: 6, bulk_price: 1300 },
+      male: { base: 499, bulk_threshold: 6, bulk_price: 499 } // Stag Male Are Not Allowed
     },
     season: {
-      female: { base: 5 }, // Fixed from 2499 to 1999
-      couple: { base: 5 },
-      family: { base: 5 },
-      kids: { base: 5 }, // Added missing kids season pricing
-      male: { base: 5 } // Added missing male season pricing
+      female: { base: 2499 },
+      couple: { base: 3499 },
+      family: { base: 5999 }, // Family season pass (4 members) - fixed price
+      kids: { base: 792 }, // Kids season pass (99 * 8 days)
+      male: { base: 3992 } // Male season pass (499 * 8 days) - though not allowed
     }
   };
 
@@ -72,32 +72,30 @@ const ModernBookingModal = () => {
 
   const labelMap = {
     single: {
-      female: 'Female - ₹5',
-      couple: 'Couple - ₹5',
-      kids: 'Kids (6-12 yrs) - ₹5',
-      family: 'Family (4 members) - ₹5',
-      male: 'Male - ₹5'
+      female: 'Female - ₹399',
+      couple: 'Couple - ₹699',
+      kids: 'Kids (6-12 yrs) - ₹99',
+      family: 'Family (4 members) - ₹1300',
+      male: 'Male - ₹499 (Stag Male Are Not Allowed)'
     },
     season: {
-      female: 'Season Pass - Female (8 Days) - ₹5',
-      couple: 'Season Pass - Couple (8 Days) - ₹5',
-      family: 'Season Pass - Family (4) (8 Days) - ₹5',
-      kids: 'Season Pass - Kids (8 Days) - ₹5',
-      male: 'Season Pass - Male (8 Days) - ₹5'
+      female: 'Season Pass - Female (8 Days) - ₹2499',
+      couple: 'Season Pass - Couple (8 Days) - ₹3499',
+      family: 'Season Pass - Family (4) (8 Days) - ₹5999',
+      kids: 'Season Pass - Kids (8 Days) - ₹792',
+      male: 'Season Pass - Male (8 Days) - ₹3992 (Stag Male Are Not Allowed)'
     }
   };
 
-  // Calculate pricing for all pass types with bulk discount
+  // Calculate pricing for all pass types - DISCOUNTS DISABLED
   const calculatePrice = () => {
     let totalAmount = 0;
     let discountApplied = false;
     let savings = 0;
     let details = [];
     
-    // Bulk discount: only for male+female single tickets
-    let maleCount = Number(ticketData.passes.male) || 0;
-    let femaleCount = Number(ticketData.passes.female) || 0;
-    let bulkEligible = ticketType === 'single' && (maleCount + femaleCount) >= 6;
+    // NOTE: Bulk discount and special discounts are currently disabled
+    // All tickets are sold at base price
     
     Object.entries(ticketData.passes).forEach(([type, count]) => {
       count = Number(count) || 0;
@@ -106,25 +104,11 @@ const ModernBookingModal = () => {
       const pricing = TICKET_PRICING[ticketType]?.[type];
       if (!pricing) return;
       
-      let unitPrice = pricing.base;
+      let unitPrice = pricing.base; // Always use base price - no discounts
       let originalPrice = pricing.base;
-      let typeDiscount = 0;
+      let typeDiscount = 0; // No discounts applied
       
-      // 50% off for female on 23rd Sept (single day only)
-      if (type === 'female' && ticketType === 'single' && isFemaleDiscountDay) {
-        unitPrice = Math.floor(pricing.base / 2); // 399 -> 199.5 -> 199
-        typeDiscount = (pricing.base - unitPrice) * count;
-        discountApplied = true;
-        savings += typeDiscount;
-      // Bulk discount for male/female only, combined 6+
-      } else if (bulkEligible && (type === 'male' || type === 'female')) {
-        unitPrice = 5;
-        typeDiscount = (originalPrice - unitPrice) * count;
-        discountApplied = true;
-        savings += typeDiscount;
-      }
-      
-      // No bulk discount for couple, kids, family
+      // All tickets sold at regular price - no discounts available
       totalAmount += unitPrice * count;
       details.push({ type, count, unitPrice, originalPrice, typeDiscount });
     });
@@ -139,7 +123,7 @@ const ModernBookingModal = () => {
       savings, 
       details, 
       isFemaleDiscountDay, 
-      bulkEligible,
+      bulkEligible: false, // Discounts disabled
       unitPrice: averageUnitPrice, // For backward compatibility
       finalPrice: averageUnitPrice, // For backward compatibility
       originalPrice: averageUnitPrice // For backward compatibility when no discount
@@ -429,20 +413,16 @@ const ModernBookingModal = () => {
           <div className="text-gray-600 text-sm">Please wait while we confirm your payment and generate your tickets.</div>
         </div>
       ) : (
-        <>
-          {/* ...existing code... */}
-        </>
-      )}
-      {/* Toast Popup */}
-      {toast.show && (
-        <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-pink-600 text-white px-6 py-3 rounded-lg shadow-lg text-base font-semibold animate-fade-in-out transition-all duration-300">
-          {toast.message}
-        </div>
-      )}
-      {/* <div className="rounded-2xl shadow-xl w-full p-6 overflow-y-auto"> */}
-        <div className="flex justify-between items-center mb-6">
-        {/* <h2 className="text-center text-2xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">Book Your Dandiya Pass</h2> */}
-        </div>
+        <div>
+          {/* Toast Popup */}
+          {toast.show && (
+            <div className="fixed top-6 left-1/2 transform -translate-x-1/2 z-50 bg-pink-600 text-white px-6 py-3 rounded-lg shadow-lg text-base font-semibold animate-fade-in-out transition-all duration-300">
+              {toast.message}
+            </div>
+          )}
+          <div className="flex justify-between items-center mb-6">
+          {/* <h2 className="text-center text-2xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">Book Your Dandiya Pass</h2> */}
+          </div>
 
         {/* Book your ticket */}
         {step === 1 && (
@@ -1021,7 +1001,8 @@ Book Again
           </div>
         )}
 
-
+        </div>
+      )}
 
       {/* </div> */}
     </div>

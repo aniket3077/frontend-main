@@ -89,49 +89,34 @@ class PaymentService {
   calculatePricing(passType, passDuration, numTickets, bookingDate = null, ticketBreakdown = null) {
     const pricing = {
       daily: {
-        female: 5,
-        couple: 5, // Updated from 699 to match frontend
-        kids: 5,
-        family: 5, // Updated from 1300 to match frontend
-        male: 5 // Added male pricing
+        female: 399,
+        couple: 699,
+        kids: 99,
+        family: 1300,
+        male: 499 // Stag Male Are Not Allowed - this price shown but booking should be restricted
       },
       season: {
-        female: 5, // Updated from 2499 to match frontend
-        couple: 5,
-        family: 5,
-        kids: 5, // Added kids season pricing
-        male: 5 // Added male season pricing
+        female: 2499,
+        couple: 3499,
+        family: 5999, // Family season pass price - keeping at 5999 for consistency
+        kids: 99 * 8, // Kids season pass (8 days)
+        male: 499 * 8 // Male season pass (though stag males not allowed)
       }
     };
 
     const prices = pricing[passDuration] || pricing.daily;
     const basePrice = prices[passType] || 0;
     
-    // If ticket breakdown is provided, calculate based on all tickets with discounts
+    // If ticket breakdown is provided, calculate based on all tickets - NO DISCOUNTS
     if (ticketBreakdown) {
       let totalAmount = 0;
       
-      // Check for bulk discount (6+ male+female tickets for single/daily)
-      const maleCount = ticketBreakdown.male || 0;
-      const femaleCount = ticketBreakdown.female || 0;
-      const bulkEligible = passDuration === 'daily' && (maleCount + femaleCount) >= 6;
-      
-      // Check for female discount on Sept 23rd
-      const isFemaleDiscountDay = bookingDate === "2025-09-23";
-      
+      // All discounts are disabled - calculate at regular prices
       Object.entries(ticketBreakdown).forEach(([type, count]) => {
         const typePrice = prices[type] || 0;
-        let unitPrice = typePrice;
+        let unitPrice = typePrice; // Always use regular price
         
-        // Apply discounts
-        if (type === 'female' && passDuration === 'daily' && isFemaleDiscountDay) {
-          // 50% off for female on Sept 23
-          unitPrice = Math.floor(typePrice / 2);
-        } else if (bulkEligible && (type === 'male' || type === 'female')) {
-          // Bulk discount for male/female
-          unitPrice = 5;
-        }
-        
+        // No discounts applied - all tickets sold at base price
         totalAmount += unitPrice * count;
       });
       

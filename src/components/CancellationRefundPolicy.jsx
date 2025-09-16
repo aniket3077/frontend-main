@@ -223,7 +223,7 @@ const CancellationRefundPolicy = () => {
                     <td className="border border-gray-300 px-4 py-2">None</td>
                     <td className="border border-gray-300 px-4 py-2">7-10 days</td>
                   </tr>
-                  <tr className="bg-gray-50">
+                  {/* <tr className="bg-gray-50">
                     <td className="border border-gray-300 px-4 py-2">Medical Emergency</td>
                     <td className="border border-gray-300 px-4 py-2 font-bold text-green-600">90%</td>
                     <td className="border border-gray-300 px-4 py-2">10%</td>
@@ -240,7 +240,7 @@ const CancellationRefundPolicy = () => {
                     <td className="border border-gray-300 px-4 py-2 font-bold text-green-600">95%</td>
                     <td className="border border-gray-300 px-4 py-2">5%</td>
                     <td className="border border-gray-300 px-4 py-2">3-5 days</td>
-                  </tr>
+                  </tr> */}
                 </tbody>
               </table>
             </div>
@@ -311,9 +311,9 @@ const CancellationRefundPolicy = () => {
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">Contact Details</h3>
                 <div className="space-y-1 text-sm">
-                  <p><strong>Email:</strong> refunds@malangdandiya.com</p>
-                  <p><strong>Phone:</strong> +91 XXXXX XXXXX</p>
-                  <p><strong>WhatsApp:</strong> +91 XXXXX XXXXX</p>
+                  <p><strong>Email:</strong> support@farmseasy.in</p>
+                  <p><strong>Phone:</strong> +91 9172788397</p>
+                  <p><strong>WhatsApp:</strong> +91 9172788397</p>
                 </div>
               </div>
               <div>

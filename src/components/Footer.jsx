@@ -37,7 +37,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-2">
                 <span>💰</span>
-                <span>Starting from ₹5</span>
+                <span>Starting from ₹99</span>
               </div>
             </div>
           </div>

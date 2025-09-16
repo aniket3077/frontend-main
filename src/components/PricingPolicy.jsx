@@ -50,30 +50,30 @@ const PricingPolicy = () => {
             
             {/* Single Day Tickets */}
             <div className="bg-blue-50 p-6 rounded-lg mb-6">
-              <h3 className="text-xl font-semibold text-blue-800 mb-4">🎫 Single Day Tickets (September 23, 2025)</h3>
+              <h3 className="text-xl font-semibold text-blue-800 mb-4">🎫 Entry Tickets (September 23, 2025)</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👩 Female</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-green-600">₹399</span>
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👨 Male</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-red-600">₹499 (Not Allowed)</span>
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👫 Couple</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-green-600">₹699</span>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>🧒 Kids (6-12 years)</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-green-600">₹99</span>
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👨‍👩‍👧‍👦 Family (4 members)</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-green-600">₹1300</span>
                   </div>
                 </div>
               </div>
@@ -86,65 +86,38 @@ const PricingPolicy = () => {
 
             {/* Season Pass */}
             <div className="bg-yellow-50 p-6 rounded-lg mb-6">
-              <h3 className="text-xl font-semibold text-yellow-800 mb-4">🎫 Season Pass (8 Days)</h3>
+              <h3 className="text-xl font-semibold text-yellow-800 mb-4">🎫 Season Pass (All 8 Days - Non-Stop Fun!)</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👩 Female</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-green-600">₹2499</span>
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👨 Male</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-red-600">₹3992 (Not Allowed)</span>
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👫 Couple</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-green-600">₹3499</span>
                   </div>
                 </div>
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>🧒 Kids (6-12 years)</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-green-600">₹792</span>
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👨‍👩‍👧‍👦 Family (4 members)</span>
-                    <span className="font-bold text-green-600">₹5</span>
+                    <span className="font-bold text-green-600">₹5999</span>
                   </div>
                 </div>
               </div>
               <div className="mt-4 p-3 bg-yellow-100 rounded">
                 <p className="text-sm text-yellow-800">
-                  <strong>Best Value:</strong> Season pass provides access to all 8 days of festivities at the same price!
+                  <strong>Best Value:</strong> Season pass provides access to all 8 days of festivities at great savings!
                 </p>
               </div>
-            </div>
-          </section>
-
-          {/* Special Offers and Discounts */}
-          <section>
-            <h2 className="text-2xl font-semibold text-gray-800 mb-4">Special Offers & Discounts</h2>
-            
-            {/* Bulk Discount */}
-            <div className="bg-green-50 border-l-4 border-green-400 p-4 mb-4">
-              <h3 className="text-lg font-semibold text-green-800 mb-2">🎉 Bulk Discount Offer</h3>
-              <ul className="list-disc pl-6 space-y-1 text-green-700">
-                <li><strong>Eligibility:</strong> Purchase 6 or more Male + Female single day tickets</li>
-                <li><strong>Discount:</strong> Pay just ₹5 per person for male and female tickets</li>
-                <li><strong>Applies to:</strong> Single day tickets only (Male and Female categories)</li>
-                <li><strong>Not applicable to:</strong> Couple, Kids, Family, or Season pass tickets</li>
-              </ul>
-            </div>
-
-            {/* Female Special Discount */}
-            <div className="bg-pink-50 border-l-4 border-pink-400 p-4 mb-4">
-              <h3 className="text-lg font-semibold text-pink-800 mb-2">👩 Female Special Discount</h3>
-              <ul className="list-disc pl-6 space-y-1 text-pink-700">
-                <li><strong>Date:</strong> September 23, 2025 only</li>
-                <li><strong>Discount:</strong> 50% off on female single day tickets</li>
-                <li><strong>Final Price:</strong> ₹3 (rounded from ₹2.5)</li>
-                <li><strong>Cannot be combined:</strong> With bulk discount offer</li>
-              </ul>
             </div>
           </section>
 
@@ -231,13 +204,13 @@ const PricingPolicy = () => {
                   <tr className="bg-gray-50">
                     <td className="border border-gray-300 px-4 py-2">6-12 years</td>
                     <td className="border border-gray-300 px-4 py-2">Kids</td>
-                    <td className="border border-gray-300 px-4 py-2 font-bold text-green-600">₹5</td>
+                    <td className="border border-gray-300 px-4 py-2 font-bold text-green-600">₹100</td>
                     <td className="border border-gray-300 px-4 py-2">Must be accompanied by adult</td>
                   </tr>
                   <tr>
                     <td className="border border-gray-300 px-4 py-2">13+ years</td>
                     <td className="border border-gray-300 px-4 py-2">Adult</td>
-                    <td className="border border-gray-300 px-4 py-2 font-bold text-green-600">₹5</td>
+                    <td className="border border-gray-300 px-4 py-2 font-bold text-green-600">₹100</td>
                     <td className="border border-gray-300 px-4 py-2">Valid ID required</td>
                   </tr>
                 </tbody>
@@ -274,9 +247,9 @@ const PricingPolicy = () => {
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">Event Organizer (Malang Event)</h3>
                 <div className="space-y-1">
-                  <p><strong>Email:</strong> pricing@malangdandiya.com</p>
-                  <p><strong>Phone:</strong> +91 XXXXX XXXXX</p>
-                  <p><strong>WhatsApp:</strong> +91 XXXXX XXXXX</p>
+                  <p><strong>Email:</strong> support@farmseasy.in</p>
+                  <p><strong>Phone:</strong> +91 9172788397</p>
+                  <p><strong>WhatsApp:</strong> +91 9172788397</p>
                 </div>
                 <p className="text-sm text-gray-600 mt-2">For pricing, event details, and policies</p>
               </div>
@@ -285,7 +258,7 @@ const PricingPolicy = () => {
                 <h3 className="font-semibold text-gray-800 mb-2">Technology Support (Farmseasy)</h3>
                 <div className="space-y-1">
                   <p><strong>Email:</strong> support@farmseasy.com</p>
-                  <p><strong>Website:</strong> www.farmseasy.com</p>
+                  <p><strong>Website:</strong> www.farmseasy.in</p>
                 </div>
                 <p className="text-sm text-gray-600 mt-2">For technical issues and platform support</p>
               </div>

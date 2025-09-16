@@ -418,9 +418,9 @@ const PrivacyPolicy = () => {
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 mb-3">📧 Privacy Officer</h3>
                 <div className="space-y-2 text-sm">
-                  <p><strong>Email:</strong> privacy@malangdandiya.com</p>
-                  <p><strong>Phone:</strong> +91 XXXXX XXXXX</p>
-                  <p><strong>Address:</strong> Privacy Officer, Malang Raas Dandiya 2025, Chh. Sambhaji Nagar, Maharashtra, India</p>
+                  <p><strong>Email:</strong> support@farmseasy.in</p>
+                  <p><strong>Phone:</strong> +91 9172788397</p>
+                  <p><strong>Address:</strong> c604 spaceolympya, Chh. Sambhaji Nagar, Maharashtra, India</p>
                 </div>
               </div>
               

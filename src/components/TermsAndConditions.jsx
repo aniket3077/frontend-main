@@ -157,8 +157,8 @@ const TermsAndConditions = () => {
               If you have any questions about these Terms and Conditions, please contact us:
             </p>
             <div className="mt-3 space-y-1">
-              <p><strong>Email:</strong> info@malangdandiya.com</p>
-              <p><strong>Phone:</strong> +91 XXXXX XXXXX</p>
+              <p><strong>Email:</strong> support@farmseasy.in</p>
+              <p><strong>Phone:</strong> +91 9172788397</p>
               <p><strong>Address:</strong> Chh. Sambhaji Nagar, Maharashtra, India</p>
             </div>
           </section>
