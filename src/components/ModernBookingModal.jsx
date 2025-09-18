@@ -96,10 +96,30 @@ const ModernBookingModal = () => {
     let savings = 0;
     let details = [];
     
-    // Calculate total tickets first for bulk discount eligibility
-    const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
+    // Expand passes to get actual ticket count (similar to backend logic)
+    const expandedPasses = { ...ticketData.passes };
+    
+    // Expand family passes: 1 family = 2 male + 2 female
+    if (expandedPasses.family > 0) {
+      const familyCount = expandedPasses.family;
+      expandedPasses.male = (expandedPasses.male || 0) + (familyCount * 2);
+      expandedPasses.female = (expandedPasses.female || 0) + (familyCount * 2);
+      delete expandedPasses.family; // Remove family after expansion
+    }
+    
+    // Expand couple passes: 1 couple = 1 male + 1 female
+    if (expandedPasses.couple > 0) {
+      const coupleCount = expandedPasses.couple;
+      expandedPasses.male = (expandedPasses.male || 0) + coupleCount;
+      expandedPasses.female = (expandedPasses.female || 0) + coupleCount;
+      delete expandedPasses.couple; // Remove couple after expansion
+    }
+    
+    // Calculate total tickets after expansion for bulk discount eligibility
+    const totalTickets = Object.values(expandedPasses).reduce((sum, count) => sum + (Number(count) || 0), 0);
     const isBulkDiscount = totalTickets >= 6;
     
+    // Process original passes for pricing (before expansion)
     Object.entries(ticketData.passes).forEach(([type, count]) => {
       count = Number(count) || 0;
       if (!count) return;
@@ -447,12 +467,57 @@ const ModernBookingModal = () => {
   };
 
   const getTotalTickets = () => {
-    return Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
+    // Use same expansion logic as calculatePrice
+    const expandedPasses = { ...ticketData.passes };
+    
+    // Expand family passes: 1 family = 2 male + 2 female
+    if (expandedPasses.family > 0) {
+      const familyCount = expandedPasses.family;
+      expandedPasses.male = (expandedPasses.male || 0) + (familyCount * 2);
+      expandedPasses.female = (expandedPasses.female || 0) + (familyCount * 2);
+      delete expandedPasses.family;
+    }
+    
+    // Expand couple passes: 1 couple = 1 male + 1 female
+    if (expandedPasses.couple > 0) {
+      const coupleCount = expandedPasses.couple;
+      expandedPasses.male = (expandedPasses.male || 0) + coupleCount;
+      expandedPasses.female = (expandedPasses.female || 0) + coupleCount;
+      delete expandedPasses.couple;
+    }
+    
+    return Object.values(expandedPasses).reduce((sum, count) => sum + (Number(count) || 0), 0);
   };
 
   const getDisplayLabel = () => {
     const { passType } = getSelectedPassInfo();
     return labelMap[ticketType][passType] || passType;
+  };
+
+  // Get detailed ticket breakdown for confirmation display
+  const getTicketBreakdown = () => {
+    const breakdown = [];
+    const priceInfo = calculatePrice();
+    
+    Object.entries(ticketData.passes).forEach(([type, count]) => {
+      count = Number(count) || 0;
+      if (!count) return;
+      
+      const detail = priceInfo.details.find(d => d.type === type);
+      if (detail) {
+        const label = labelMap[ticketType][type] || type;
+        breakdown.push({
+          type,
+          label: label.split(' - ')[0], // Get just the pass type without price
+          count,
+          unitPrice: detail.unitPrice,
+          originalPrice: detail.originalPrice,
+          hasDiscount: detail.unitPrice !== detail.originalPrice
+        });
+      }
+    });
+    
+    return breakdown;
   };
 
   return (
@@ -563,7 +628,7 @@ const ModernBookingModal = () => {
                     >
                       <div>
                         <div className={`font-semibold ${ticketType === 'season' ? 'text-pink-800' : 'text-gray-800'} text-sm`}>Season Pass</div>
-                        <div className={`${ticketType === 'season' ? 'text-pink-700/80' : 'text-gray-500'} text-xs`}>All 8 days</div>
+                        <div className={`${ticketType === 'season' ? 'text-pink-700/80' : 'text-gray-500'} text-xs`}>All 9 days</div>
                       </div>
                     </button>
                   </div>
@@ -630,8 +695,12 @@ const ModernBookingModal = () => {
                           <span className="font-medium text-gray-700 text-sm">
                             {key === 'female' && ticketType === 'single' && isFemaleDiscountDay ? (
                               <>
-                                <span className="line-through text-gray-400 mr-1">₹399</span>
-                                <span className="text-pink-600 font-bold">₹199</span> <span className="ml-1">Female (50% OFF)</span>
+                                <span>Female</span>
+                                <span className="ml-2 text-xs">
+                                  <span className="line-through text-gray-400">₹399</span>
+                                  <span className="text-pink-600 font-bold ml-1">₹199</span>
+                                  <span className="text-pink-600 font-semibold ml-1">(50% OFF)</span>
+                                </span>
                               </>
                             ) : label}
                           </span>
@@ -691,6 +760,10 @@ const ModernBookingModal = () => {
                     {/* Female 50% discount message for September 23rd */}
                     {priceInfo.isFemaleDiscountDay && ticketType === 'single' && (
                       <div className="text-pink-600 text-xs font-semibold mt-1">🎉 Special: 50% OFF for Female tickets on 23rd September!</div>
+                    )}
+                    {/* Bulk discount applied message */}
+                    {priceInfo.bulkEligible && (
+                      <div className="text-green-600 text-xs font-semibold mt-1">💰 Bulk Discount Applied: All tickets now just ₹350 each!</div>
                     )}
                   </div>
                 </div>
@@ -900,7 +973,7 @@ const ModernBookingModal = () => {
                   <div className="text-gray-600 font-medium">Event:</div>
                   <div className="text-right font-semibold text-gray-800">Malang Ras Dandiya 2025</div>
                   <div className="text-gray-600 font-medium">Date:</div>
-                  <div className="text-right font-semibold text-gray-800">{ticketType === 'season' ? 'Season Pass (All 8 Days)' : ticketData.booking_date}</div>
+                  <div className="text-right font-semibold text-gray-800">{ticketType === 'season' ? 'Season Pass (All 9 Days)' : ticketData.booking_date}</div>
                   
                   {/* Show each pass type breakdown instead of single "Pass Type" */}
                   <div className="col-span-2 border-t border-gray-200 my-2"></div>
@@ -1005,13 +1078,26 @@ Book Again
               <div className="bg-white rounded-lg shadow p-3">
                 <span className="font-bold text-sm text-gray-800 block mb-2">Your Tickets</span>
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between bg-pink-50 rounded px-2 py-1">
-                    <span className="font-medium text-gray-700 text-xs">{getDisplayLabel()}</span>
-                    <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-2 py-1 rounded">₹{priceInfo.unitPrice} each</span>
-                  </div>
-                  <div className="flex items-center justify-between bg-pink-50 rounded px-2 py-1">
-                    <span className="font-medium text-gray-700 text-xs">Tickets</span>
-                    <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-2 py-1 rounded">{getTotalTickets()}</span>
+                  {getTicketBreakdown().map((ticket, index) => (
+                    <div key={index} className="flex items-center justify-between bg-pink-50 rounded px-2 py-1">
+                      <span className="font-medium text-gray-700 text-xs">
+                        {ticket.label} × {ticket.count}
+                      </span>
+                      <span className="bg-pink-100 text-pink-600 text-xs font-semibold px-2 py-1 rounded">
+                        {ticket.hasDiscount ? (
+                          <>
+                            <span className="line-through text-gray-400">₹{ticket.originalPrice}</span>
+                            {' '}₹{ticket.unitPrice}
+                          </>
+                        ) : (
+                          `₹${ticket.unitPrice}`
+                        )}
+                      </span>
+                    </div>
+                  ))}
+                  <div className="flex items-center justify-between bg-green-50 rounded px-2 py-1 border-t border-green-200 mt-2">
+                    <span className="font-bold text-gray-800 text-xs">Total Tickets</span>
+                    <span className="bg-green-100 text-green-600 text-xs font-semibold px-2 py-1 rounded">{getTotalTickets()}</span>
                   </div>
                 </div>
               </div>
