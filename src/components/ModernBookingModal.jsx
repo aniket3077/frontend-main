@@ -123,29 +123,38 @@ const ModernBookingModal = () => {
     Object.entries(ticketData.passes).forEach(([type, count]) => {
       count = Number(count) || 0;
       if (!count) return;
-      
+
       const pricing = TICKET_PRICING[ticketType]?.[type];
       if (!pricing) return;
-      
+
       let unitPrice = pricing.base;
       let originalPrice = pricing.base;
       let typeDiscount = 0;
-      
-      // Apply bulk discount first (6+ tickets = ₹350 each)
-      if (isBulkDiscount) {
+
+      // Female ticket logic
+      if (type === 'female' && ticketType === 'single') {
+        if (isFemaleDiscountDay) {
+          // On 23rd Sep, always ₹199
+          unitPrice = 199;
+          typeDiscount = (pricing.base - 199) * count;
+          discountApplied = true;
+          savings += typeDiscount;
+        } else if (isBulkDiscount) {
+          // Bulk offer for female from 24th Sep onwards
+          unitPrice = 350;
+          typeDiscount = (pricing.base - 350) * count;
+          discountApplied = true;
+          savings += typeDiscount;
+        }
+      } else if (isBulkDiscount && type === 'male') {
+        // Bulk discount for male any day
         unitPrice = 350;
         typeDiscount = (pricing.base - 350) * count;
         discountApplied = true;
         savings += typeDiscount;
       }
-      // Apply 50% discount for female tickets on September 23rd only (if no bulk discount)
-      else if (type === 'female' && ticketType === 'single' && isFemaleDiscountDay) {
-        unitPrice = Math.floor(pricing.base / 2); // 399 -> 199
-        typeDiscount = (pricing.base - unitPrice) * count;
-        discountApplied = true;
-        savings += typeDiscount;
-      }
-      
+      // No bulk discount for couple/family/kids
+
       totalAmount += unitPrice * count;
       details.push({ type, count, unitPrice, originalPrice, typeDiscount });
     });
@@ -570,6 +579,9 @@ const ModernBookingModal = () => {
                     <span className="text-orange-700">Buy 6 or more tickets</span>
                     <span className="text-green-700 ml-2">& pay just ₹350/person</span>
                   </span>
+                  {isFemaleDiscountDay && ticketType === 'single' && (
+                    <span className="block w-full text-center text-pink-600 text-xs font-semibold mt-2">* On 23rd September, female tickets are always ₹199, even in bulk booking.</span>
+                  )}
                 </div>
               </div>
 
