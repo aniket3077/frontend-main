@@ -59,7 +59,7 @@ const PricingPolicy = () => {
                   </div>
                   <div className="flex justify-between items-center border-b pb-2">
                     <span>👫 Couple</span>
-                    <span className="font-bold text-pink-600">₹299</span>
+                    <span className="font-bold text-pink-600">₹249</span>
                   </div>
                 </div>
                 <div className="space-y-3">
@@ -75,7 +75,7 @@ const PricingPolicy = () => {
               </div>
               <div className="mt-4 p-3 bg-yellow-100 rounded">
                 <p className="text-sm text-yellow-800">
-                  <strong>September 23rd Only:</strong> Female tickets at special price of ₹1! Couple tickets at special price of ₹299. Male tickets at special price of ₹249.
+                  <strong>September 23rd Only:</strong> Female tickets at special price of ₹1! Couple tickets at special price of ₹249. Male tickets at special price of ₹249.
                 </p>
               </div>
             </div>
