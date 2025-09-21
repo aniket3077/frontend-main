@@ -134,9 +134,9 @@ const ModernBookingModal = () => {
       // Female ticket logic
       if (type === 'female' && ticketType === 'single') {
         if (isFemaleDiscountDay) {
-          // On 23rd Sep, always ₹199
-          unitPrice = 199;
-          typeDiscount = (pricing.base - 199) * count;
+          // On 23rd Sep, female tickets are FREE
+          unitPrice = 0;
+          typeDiscount = pricing.base * count;
           discountApplied = true;
           savings += typeDiscount;
         } else if (isBulkDiscount) {
@@ -146,12 +146,29 @@ const ModernBookingModal = () => {
           discountApplied = true;
           savings += typeDiscount;
         }
-      } else if (isBulkDiscount && type === 'male') {
-        // Bulk discount for male any day
-        unitPrice = 350;
-        typeDiscount = (pricing.base - 350) * count;
-        discountApplied = true;
-        savings += typeDiscount;
+      } else if (type === 'couple' && ticketType === 'single') {
+        if (isFemaleDiscountDay) {
+          // On 23rd Sep, couple tickets are ₹299
+          unitPrice = 299;
+          typeDiscount = (pricing.base - 299) * count;
+          discountApplied = true;
+          savings += typeDiscount;
+        }
+        // No bulk discount for couples
+      } else if (type === 'male' && ticketType === 'single') {
+        if (isFemaleDiscountDay) {
+          // On 23rd Sep, male tickets are ₹249
+          unitPrice = 249;
+          typeDiscount = (pricing.base - 249) * count;
+          discountApplied = true;
+          savings += typeDiscount;
+        } else if (isBulkDiscount) {
+          // Bulk discount for male any day
+          unitPrice = 350;
+          typeDiscount = (pricing.base - 350) * count;
+          discountApplied = true;
+          savings += typeDiscount;
+        }
       }
       // No bulk discount for couple/family/kids
 
@@ -195,7 +212,7 @@ const ModernBookingModal = () => {
     } else {
       // Default to female pricing when no tickets selected
       const femalePrice = TICKET_PRICING[ticketType]?.female?.base || 399;
-      displayUnitPrice = isFemaleDiscountDay ? Math.floor(femalePrice / 2) : femalePrice;
+      displayUnitPrice = isFemaleDiscountDay ? 0 : femalePrice; // FREE on September 23rd
       displayOriginalPrice = femalePrice;
     }
     
@@ -580,7 +597,7 @@ const ModernBookingModal = () => {
                     <span className="text-green-700 ml-2">& pay just ₹350/person</span>
                   </span>
                   {isFemaleDiscountDay && ticketType === 'single' && (
-                    <span className="block w-full text-center text-pink-600 text-xs font-semibold mt-2">* On 23rd September, female tickets are always ₹199, even in bulk booking.</span>
+                    <span className="block w-full text-center text-green-600 text-xs font-semibold mt-2">* On 23rd September, female tickets are FREE, couple tickets are ₹299, and male tickets are ₹249.</span>
                   )}
                 </div>
               </div>
@@ -710,8 +727,26 @@ const ModernBookingModal = () => {
                                 <span>Female</span>
                                 <span className="ml-2 text-xs">
                                   <span className="line-through text-gray-400">₹399</span>
-                                  <span className="text-pink-600 font-bold ml-1">₹199</span>
-                                  <span className="text-pink-600 font-semibold ml-1">(50% OFF)</span>
+                                  <span className="text-green-600 font-bold ml-1">FREE</span>
+                                  <span className="text-green-600 font-semibold ml-1">(100% OFF)</span>
+                                </span>
+                              </>
+                            ) : key === 'couple' && ticketType === 'single' && isFemaleDiscountDay ? (
+                              <>
+                                <span>Couple</span>
+                                <span className="ml-2 text-xs">
+                                  <span className="line-through text-gray-400">₹699</span>
+                                  <span className="text-pink-600 font-bold ml-1">₹299</span>
+                                  <span className="text-pink-600 font-semibold ml-1">(57% OFF)</span>
+                                </span>
+                              </>
+                            ) : key === 'male' && ticketType === 'single' && isFemaleDiscountDay ? (
+                              <>
+                                <span>Male</span>
+                                <span className="ml-2 text-xs">
+                                  <span className="line-through text-gray-400">₹399</span>
+                                  <span className="text-blue-600 font-bold ml-1">₹249</span>
+                                  <span className="text-blue-600 font-semibold ml-1">(37% OFF)</span>
                                 </span>
                               </>
                             ) : label}
@@ -769,9 +804,9 @@ const ModernBookingModal = () => {
                       <span className="text-base font-bold text-gray-700">Grand Total</span>
                       <span className="text-xl font-extrabold text-gray-900">₹{priceInfo.totalAmount}</span>
                     </div>
-                    {/* Female 50% discount message for September 23rd */}
+                    {/* September 23rd special discount message */}
                     {priceInfo.isFemaleDiscountDay && ticketType === 'single' && (
-                      <div className="text-pink-600 text-xs font-semibold mt-1">🎉 Special: 50% OFF for Female tickets on 23rd September!</div>
+                      <div className="text-green-600 text-xs font-semibold mt-1">🎉 September 23rd Special: Female tickets FREE, Couple tickets only ₹299, Male tickets only ₹249!</div>
                     )}
                     {/* Bulk discount applied message */}
                     {priceInfo.bulkEligible && (

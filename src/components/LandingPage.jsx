@@ -159,6 +159,17 @@ const LandingPage = () => {
           <span className="font-semibold text-red-600">₹499</span>
         </li>
       </ul>
+      
+      {/* September 23rd Special Pricing Note */}
+      <div className="mt-4 p-3 bg-gradient-to-r from-green-100 to-pink-100 rounded-lg border border-green-200">
+        <p className="text-sm font-bold text-green-700 mb-1">🎉 September 23rd Special!</p>
+        <p className="text-xs text-gray-700">
+          <span className="text-green-600 font-semibold">Female tickets: FREE</span><br/>
+          <span className="text-pink-600 font-semibold">Couple tickets: Only ₹299</span><br/>
+          <span className="text-blue-600 font-semibold">Male tickets: Only ₹249</span>
+        </p>
+      </div>
+      
       {/* No general note here, only on booking card */}
     </div>
 

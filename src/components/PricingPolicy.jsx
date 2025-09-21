@@ -48,9 +48,41 @@ const PricingPolicy = () => {
           <section>
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">Current Ticket Prices</h2>
             
-            {/* Single Day Tickets */}
+            {/* September 23rd Special Pricing */}
+            <div className="bg-gradient-to-br from-green-50 to-pink-50 p-6 rounded-lg mb-6 border-2 border-green-200">
+              <h3 className="text-xl font-semibold text-green-800 mb-4">🎉 September 23rd Special Pricing</h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center border-b pb-2">
+                    <span>👩 Female</span>
+                    <span className="font-bold text-green-600">FREE (₹0)</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b pb-2">
+                    <span>👫 Couple</span>
+                    <span className="font-bold text-pink-600">₹299</span>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center border-b pb-2">
+                    <span>🧒 Kids (6-12 years)</span>
+                    <span className="font-bold text-green-600">₹99</span>
+                  </div>
+                  <div className="flex justify-between items-center border-b pb-2">
+                    <span>👨‍👩‍👧‍👦 Family (4 members)</span>
+                    <span className="font-bold text-green-600">₹1300</span>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 p-3 bg-yellow-100 rounded">
+                <p className="text-sm text-yellow-800">
+                  <strong>September 23rd Only:</strong> Female tickets are completely FREE! Couple tickets at special price of ₹299. Male tickets at special price of ₹249.
+                </p>
+              </div>
+            </div>
+            
+            {/* Regular Pricing */}
             <div className="bg-blue-50 p-6 rounded-lg mb-6">
-              <h3 className="text-xl font-semibold text-blue-800 mb-4">🎫 Entry Tickets (September 23, 2025)</h3>
+              <h3 className="text-xl font-semibold text-blue-800 mb-4">🎫 Regular Entry Tickets (September 24 onwards)</h3>
               <div className="grid md:grid-cols-2 gap-4">
                 <div className="space-y-3">
                   <div className="flex justify-between items-center border-b pb-2">
