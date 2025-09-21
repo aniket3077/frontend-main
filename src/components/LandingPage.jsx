@@ -25,7 +25,7 @@ const LandingPage = () => {
           loop
           muted
           playsInline
-          src="https://qczbnczsidlzzwziubhu.supabase.co/storage/v1/object/public/malangdandiya/bg.mp4"
+          src="https://res.cloudinary.com/debuvwpnt/video/upload/v1758289731/mlcyupycc2lz0i3syirl.mp4"
           poster="/images/dandiya-poster.jpg"
           onError={(e) => {
             // Fallback: hide video if it fails to load
