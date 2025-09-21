@@ -39,7 +39,7 @@ const LandingPage = () => {
         {/* Foreground content */}
         <div className="relative z-10 flex items-center justify-center h-full">
           <div className="text-center text-white px-4">
-            <img src="/images/dandiya-logo.png" alt="Malang Ras Dandiya" className="mx-auto w-40 mb-6" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+            <img src="https://res.cloudinary.com/debuvwpnt/image/upload/v1758299018/y5pprsys3kn5xbdxvi6u.png" alt="Malang Ras Dandiya" className="mx-auto w-40 mb-6" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
             <h1 className="text-5xl md:text-6xl font-bold mb-4">Malang Raas Dandiya 2025</h1>
             <p className="text-xl mb-6">Chh. Sambhaji Nagar's Biggest Navratri Celebration</p>
             <button

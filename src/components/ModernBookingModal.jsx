@@ -416,7 +416,7 @@ const ModernBookingModal = () => {
         name: "Malang Ras Dandiya 2025",
         description: `Booking for ${getTotalTickets()} ${getDisplayLabel()}`,
 
-        image: 'https://malangevents.com/images/dandiya-logo.png',
+        image: 'https://res.cloudinary.com/debuvwpnt/image/upload/v1758299018/y5pprsys3kn5xbdxvi6u.png',
         prefill: { name: userData.name, email: userData.email, contact: userData.phone },
         handler: async function (response) {
           try {

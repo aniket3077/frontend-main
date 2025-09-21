@@ -8,8 +8,8 @@ const Header = () => {
 
   const [activeTab, setActiveTab] = React.useState("landing");
   const [menuOpen, setMenuOpen] = React.useState(false);
-  // Use new logo in public/images
-  const [logoSrc] = React.useState("/images/RaasLogo.PNG");
+  // Use new logo from Cloudinary
+  const [logoSrc] = React.useState("https://res.cloudinary.com/debuvwpnt/image/upload/v1758299018/y5pprsys3kn5xbdxvi6u.png");
 
   return (
     <nav className="bg-white border-b shadow-sm sticky top-0 z-50">

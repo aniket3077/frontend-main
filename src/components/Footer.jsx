@@ -9,7 +9,7 @@ const Footer = () => {
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-3 mb-4 items-start">
               <img
-                src="/images/RaasLogo.PNG"
+                src="https://res.cloudinary.com/debuvwpnt/image/upload/v1758299018/y5pprsys3kn5xbdxvi6u.png"
                 alt="Malang Ras Dandiya Logo"
                 className="w-14 h-14 rounded-lg shadow mb-2 sm:mb-0"
               />
