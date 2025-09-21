@@ -75,7 +75,7 @@ const PricingPolicy = () => {
               </div>
               <div className="mt-4 p-3 bg-yellow-100 rounded">
                 <p className="text-sm text-yellow-800">
-                  <strong>September 23rd Only:</strong> Female tickets are completely FREE! Couple tickets at special price of ₹299. Male tickets at special price of ₹249.
+                  <strong>September 23rd Only:</strong> Female tickets at special price of ₹1! Couple tickets at special price of ₹299. Male tickets at special price of ₹249.
                 </p>
               </div>
             </div>
