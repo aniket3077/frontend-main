@@ -1,7 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import ReactDOM from "react-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
+// Helper function to check if the selected date is a dhamaka special date
+const isDhamakaSpecialDate = (bookingDate) => {
+  if (!bookingDate) return false;
+  const dateStr = bookingDate.toString();
+  return dateStr === '2025-09-25' || dateStr === '2025-09-26';
+};
+
+// Get pricing based on booking date
+const getTicketPricing = (bookingDate) => {
+  const isSpecialDate = isDhamakaSpecialDate(bookingDate);
+  
+  return {
+    // 🎟 Single Day Entry Tickets
+    single: isSpecialDate ? {
+      // 🎉 DHAMAKA RATES for Sep 25-26
+      female: { base: 99 },       // 👩 Female – ₹99 (DHAMAKA!)
+      couple: { base: 249 },      // 👫 Couple – ₹249 (DHAMAKA!)
+      kids: { base: 99 },         // 🧒 Kids – ₹99 (DHAMAKA!)
+      family: { base: 499 },      // 👨‍👩‍👧‍👦 Family – ₹499 (DHAMAKA!)
+      male: { base: 199 }         // 👨 Male – ₹199 (DHAMAKA!)
+    } : {
+      // Regular pricing for other dates
+      female: { base: 399 },      // 👩 Female – ₹399
+      couple: { base: 699 },      // 👫 Couple – ₹699
+      kids: { base: 199 },        // 🧒 Kids (6-12 yrs) – ₹199
+      family: { base: 1599 },     // 👨‍👩‍👧‍👦 Family (4 members) – ₹1599
+      male: { base: 699 }         // 👨 Male – ₹699 (Stag Male Not Allowed)
+    },
+    // 🔥 Season Pass Tickets (All 8 Days) - Always regular pricing
+    season: {
+      female: { base: 2499 },     // 👩 Female Season – ₹2499
+      couple: { base: 3499 },     // 👫 Couple Season – ₹3499
+      family: { base: 5999 },     // 👨‍👩‍👧‍👦 Family Season – ₹5999
+      kids: { base: 999 },        // 🧒 Kids Season Pass – ₹999
+      male: { base: 2999 }        // 👨 Male Season – ₹2999
+    }
+  };
+};
 
 const ModernBookingModal = () => {
   // Show loading overlay after payment, before confirmation
@@ -50,44 +89,32 @@ const ModernBookingModal = () => {
   // 🎉 Malang Raas Dandiya 2025 - Updated Pricing Structure (Matches Backend)
   const [ticketType, setTicketType] = useState('single'); // 'single' or 'season'
   
-  const TICKET_PRICING = {
-    // 🎟 Single Day Entry Tickets
-    single: {
-      female: { base: 399 },      // 👩 Female – ₹399
-      couple: { base: 699 },       // 👫 Couple – ₹699
-      kids: { base: 99 },          // 🧒 Kids (6-12 yrs) – ₹99
-      family: { base: 1300 },     // 👨‍👩‍👧‍👦 Family (4 members) – ₹1300
-      male: { base: 499 }         // 👨 Male – ₹499 (Stag Male Not Allowed)
-    },
-    // 🔥 Season Pass Tickets (All 8 Days)
-    season: {
-      female: { base: 2499 },     // 👩 Female Season – ₹2499
-      couple: { base: 3499 },     // 👫 Couple Season – ₹3499
-      family: { base: 5999 },     // 👨‍👩‍👧‍👦 Family Season – ₹5999
-      kids: { base: 999 },         // 🧒 Kids Season Pass
-      male: { base: 2999 }        // 👨 Male Season (though not allowed)
-    }
-  };
+  // Dynamic pricing and labels based on booking date - recalculated on each render
+  const TICKET_PRICING = useMemo(() => getTicketPricing(ticketData.booking_date), [ticketData.booking_date]);
 
   // Helper: September 23rd female discount
   const isFemaleDiscountDay = ticketData.booking_date === "2025-09-23";
 
-  const labelMap = {
-    single: {
-      female: 'Female - ₹399',
-      couple: 'Couple - ₹699',
-      kids: 'Kids (6-12 yrs) - ₹99',
-      family: 'Family (4 members) - ₹1300',
-      male: 'Male - ₹499 (Stag Male Are Not Allowed)'
-    },
-    season: {
-      female: 'Season Pass - Female (8 Days) - ₹2499',
-      couple: 'Season Pass - Couple (8 Days) - ₹3499',
-      family: 'Season Pass - Family (4) (8 Days) - ₹5999',
-      kids: 'Season Pass - Kids (8 Days) - ₹999',
-      male: 'Season Pass - Male (8 Days) - ₹2999 (Stag Male Are Not Allowed)'
-    }
-  };
+  // Dynamic label map based on current pricing
+  const labelMap = useMemo(() => {
+    const pricing = TICKET_PRICING;
+    return {
+      single: {
+        female: `Female - ₹${pricing.single.female.base}`,
+        couple: `Couple - ₹${pricing.single.couple.base}`,
+        kids: `Kids (6-12 yrs) - ₹${pricing.single.kids.base}`,
+        family: `Family (4 members) - ₹${pricing.single.family.base}`,
+        male: `Male - ₹${pricing.single.male.base} (Stag Male Are Not Allowed)`
+      },
+      season: {
+        female: `Season Pass - Female (9 Days) - ₹${pricing.season.female.base}`,
+        couple: `Season Pass - Couple (9 Days) - ₹${pricing.season.couple.base}`,
+        family: `Season Pass - Family (4) (9 Days) - ₹${pricing.season.family.base}`,
+        kids: `Season Pass - Kids (9 Days) - ₹${pricing.season.kids.base}`,
+        male: `Season Pass - Male (9 Days) - ₹${pricing.season.male.base} (Stag Male Are Not Allowed)`
+      }
+    };
+  }, [TICKET_PRICING]);
 
   // Calculate pricing for all pass types - with bulk discounts and female discount
   const calculatePrice = () => {
@@ -600,6 +627,30 @@ const ModernBookingModal = () => {
                     <span className="block w-full text-center text-green-600 text-xs font-semibold mt-2">* On 23rd September, female tickets are ₹1, couple tickets are ₹249, and male tickets are ₹249.</span>
                   )}
                 </div>
+
+                {/* Dhamaka Special Banner for Sep 25-26 - Enhanced */}
+                {isDhamakaSpecialDate(ticketData.booking_date) && ticketType === 'single' && (
+                  <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-lg shadow-xl relative mb-3 py-4 px-4 border-2 border-red-400 overflow-hidden">
+                    {/* Animated background overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-orange-400 opacity-50 animate-pulse"></div>
+                    
+                    <div className="relative z-10 text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <span className="text-2xl mr-1">🔥</span>
+                        <span className="text-lg font-black tracking-wider">DHAMAKA RATES!</span>
+                        <span className="text-2xl ml-1">🔥</span>
+                      </div>
+                      <div className="text-sm font-bold mb-2">� Special Pricing for {ticketData.booking_date}!</div>
+                      <div className="grid grid-cols-2 gap-2 text-xs font-bold">
+                        <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👩 Female ₹99</div>
+                        <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨 Male ₹199</div>
+                        <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👫 Couple ₹249</div>
+                        <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨‍👩‍👧‍👦 Family ₹499</div>
+                      </div>
+                      <div className="mt-2 text-xs font-semibold animate-bounce">⚡ Limited Time Only!</div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-2">

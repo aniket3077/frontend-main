@@ -85,24 +85,56 @@ class PaymentService {
     }
   }
 
-  // 🎉 Calculate pricing based on pass type and duration - Updated to match backend exactly
+  // Helper function to check if date is September 25 or 26, 2025 (DHAMAKA days)
+  isDhamakaSpecialDate(bookingDate) {
+    if (!bookingDate) return false;
+    
+    const date = new Date(bookingDate);
+    const year = date.getFullYear();
+    const month = date.getMonth(); // 0-based, so September = 8
+    const day = date.getDate();
+    
+    // Check if it's September 25 or 26, 2025
+    return year === 2025 && month === 8 && (day === 25 || day === 26);
+  }
+
+  // 🎉 Calculate pricing based on pass type and duration - Date-specific pricing for Sep 25-26
   calculatePricing(passType, passDuration, numTickets, bookingDate = null, ticketBreakdown = null) {
-    const pricing = {
+    // Check if booking date is September 25 or 26, 2025
+    const isDhamakaDate = this.isDhamakaSpecialDate(bookingDate);
+    
+    // Regular pricing structure
+    const regularPricing = {
       daily: {
         female: { base: 399 },      // 👩 Female – ₹399
-        couple: { base: 699 },       // 👫 Couple – ₹699
-        kids: { base: 99 },          // 🧒 Kids (6-12 yrs) – ₹99
-        family: { base: 1300 },     // 👨‍👩‍👧‍👦 Family (4 members) – ₹1300
-        male: { base: 499 }         // 👨 Male – ₹499 (Stag Male Not Allowed)
+        couple: { base: 699 },      // 👫 Couple – ₹699
+        kids: { base: 99 },         // 🧒 Kids – ₹99
+        family: { base: 1300 },     // 👨‍👩‍👧‍👦 Family – ₹1300
+        male: { base: 499 }         // 👨 Male – ₹499
       },
       season: {
         female: { base: 2499 },     // 👩 Female Season – ₹2499
         couple: { base: 3499 },     // 👫 Couple Season – ₹3499
         family: { base: 5999 },     // 👨‍👩‍👧‍👦 Family Season – ₹5999
-        kids: { base: 999 },         // 🧒 Kids Season Pass
-        male: { base: 2999 }        // 👨 Male Season (though not allowed)
+        kids: { base: 999 },        // 🧒 Kids Season Pass – ₹999
+        male: { base: 2999 }        // 👨 Male Season – ₹2999
       }
     };
+
+    // DHAMAKA pricing for Sep 25-26 (only for daily passes)
+    const dhamakaPricing = {
+      daily: {
+        female: { base: 99 },       // 👩 Female – ₹99 (DHAMAKA RATE!)
+        couple: { base: 249 },      // 👫 Couple – ₹249 (DHAMAKA RATE!)
+        kids: { base: 99 },         // 🧒 Kids – ₹99 (DHAMAKA RATE!)
+        family: { base: 499 },      // 👨‍👩‍👧‍👦 Family – ₹499 (DHAMAKA RATE!)
+        male: { base: 199 }         // 👨 Male – ₹199 (DHAMAKA RATE!)
+      },
+      season: regularPricing.season // Season pass prices remain unchanged
+    };
+
+    // Choose pricing based on date and pass type
+    const pricing = (isDhamakaDate && passDuration === 'daily') ? dhamakaPricing : regularPricing;
 
     const priceObj = pricing[passDuration]?.[passType] || pricing.daily?.[passType];
     if (!priceObj) return { basePrice: 0, finalPrice: 0, totalAmount: 0, discountApplied: false };

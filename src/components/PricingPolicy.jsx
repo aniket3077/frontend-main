@@ -79,6 +79,66 @@ const PricingPolicy = () => {
                 </p>
               </div>
             </div>
+
+            {/* 🔥 DHAMAKA RATES - September 25-26 */}
+            <div className="bg-gradient-to-br from-red-100 via-orange-100 to-yellow-100 p-6 rounded-lg mb-6 border-3 border-red-400 shadow-2xl relative overflow-hidden">
+              {/* Animated background */}
+              <div className="absolute inset-0 bg-gradient-to-r from-red-200 to-orange-200 opacity-30 animate-pulse"></div>
+              
+              <div className="relative z-10">
+                <div className="flex items-center justify-center mb-4">
+                  <span className="text-3xl mr-2">🔥</span>
+                  <h3 className="text-2xl font-extrabold text-red-700">DHAMAKA RATES!</h3>
+                  <span className="text-3xl ml-2">🔥</span>
+                </div>
+                <div className="text-center mb-4">
+                  <span className="bg-red-500 text-white px-4 py-2 rounded-full font-bold text-lg shadow-lg">
+                    💥 September 25-26 ONLY!
+                  </span>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center border-b-2 border-red-300 pb-2 bg-white/50 rounded px-3 py-2">
+                      <span className="font-semibold">👩 Female</span>
+                      <div className="text-right">
+                        <span className="font-bold text-red-600 text-xl">₹99</span>
+                        <div className="text-xs text-gray-500 line-through">was ₹399</div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center border-b-2 border-red-300 pb-2 bg-white/50 rounded px-3 py-2">
+                      <span className="font-semibold">👨 Male</span>
+                      <div className="text-right">
+                        <span className="font-bold text-red-600 text-xl">₹199</span>
+                        <div className="text-xs text-gray-500 line-through">was ₹699</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-center border-b-2 border-red-300 pb-2 bg-white/50 rounded px-3 py-2">
+                      <span className="font-semibold">👫 Couple</span>
+                      <div className="text-right">
+                        <span className="font-bold text-red-600 text-xl">₹249</span>
+                        <div className="text-xs text-gray-500 line-through">was ₹699</div>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center border-b-2 border-red-300 pb-2 bg-white/50 rounded px-3 py-2">
+                      <span className="font-semibold">👨‍👩‍👧‍👦 Family (4 members)</span>
+                      <div className="text-right">
+                        <span className="font-bold text-red-600 text-xl">₹499</span>
+                        <div className="text-xs text-gray-500 line-through">was ₹1599</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="mt-6 text-center">
+                  <div className="bg-gradient-to-r from-yellow-400 to-orange-400 text-black px-6 py-3 rounded-lg font-bold text-lg shadow-lg inline-block animate-bounce">
+                    ⚡ MASSIVE SAVINGS - Don't Miss Out!
+                  </div>
+                </div>
+              </div>
+            </div>
             
             {/* Regular Pricing */}
             <div className="bg-blue-50 p-6 rounded-lg mb-6">

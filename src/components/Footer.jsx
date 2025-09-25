@@ -1,5 +1,4 @@
-import React from "react";
-import logo11 from "../assets/logo11.png";
+
 const Footer = () => {
   return (
     <footer className="border-t bg-white mt-12">

@@ -116,6 +116,54 @@ const LandingPage = () => {
         </div>
       </div>
 
+      {/* 🔥 DHAMAKA OFFER BANNER - Top Highlight */}
+      <div className="max-w-7xl mx-auto mb-8 px-4">
+        <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-2xl shadow-2xl p-6 text-center relative overflow-hidden">
+          {/* Animated background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-orange-400 opacity-50 animate-pulse"></div>
+          <div className="relative z-10">
+            <div className="flex items-center justify-center mb-3">
+              <span className="text-4xl mr-2">🔥</span>
+              <h2 className="text-3xl font-extrabold">DHAMAKA RATES!</h2>
+              <span className="text-4xl ml-2">🔥</span>
+            </div>
+            <p className="text-xl font-bold mb-4">💥 ONLY on September 25-26, 2025!</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+              <div className="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                <div className="text-2xl mb-1">👩</div>
+                <div className="font-bold">Female</div>
+                <div className="text-2xl font-extrabold">₹99</div>
+                <div className="text-sm opacity-80">was ₹399</div>
+              </div>
+              <div className="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                <div className="text-2xl mb-1">👨</div>
+                <div className="font-bold">Male</div>
+                <div className="text-2xl font-extrabold">₹199</div>
+                <div className="text-sm opacity-80">was ₹699</div>
+              </div>
+              <div className="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                <div className="text-2xl mb-1">👫</div>
+                <div className="font-bold">Couple</div>
+                <div className="text-2xl font-extrabold">₹249</div>
+                <div className="text-sm opacity-80">was ₹699</div>
+              </div>
+              <div className="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
+                <div className="text-2xl mb-1">👨‍👩‍👧‍👦</div>
+                <div className="font-bold">Family</div>
+                <div className="text-2xl font-extrabold">₹499</div>
+                <div className="text-sm opacity-80">was ₹1599</div>
+              </div>
+            </div>
+            <div className="mt-4">
+              <p className="text-lg font-semibold animate-bounce mb-2">⚡ Don't Miss Out - Book Now!</p>
+              {/* Simple countdown display */}
+              <div className="bg-black/20 rounded-lg px-4 py-2 inline-block">
+                <p className="text-sm font-bold">⏰ Valid until September 26, 11:59 PM</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Ticket Pricing */}
       <div className="max-w-7xl mx-auto py-16 px-4">
@@ -168,6 +216,21 @@ const LandingPage = () => {
           <span className="text-pink-600 font-semibold">Couple tickets: Only ₹249</span><br/>
           <span className="text-blue-600 font-semibold">Male tickets: Only ₹249</span>
         </p>
+      </div>
+
+      {/* DHAMAKA OFFER - September 25-26 */}
+      <div className="mt-3 p-4 bg-gradient-to-r from-red-100 via-orange-100 to-yellow-100 rounded-lg border-2 border-red-300 shadow-lg animate-pulse">
+        <div className="flex items-center justify-center mb-2">
+          <span className="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full shadow-md">🔥 DHAMAKA RATES!</span>
+        </div>
+        <p className="text-sm font-bold text-red-700 mb-1 text-center">💥 September 25-26 ONLY!</p>
+        <div className="grid grid-cols-2 gap-1 text-xs">
+          <span className="text-red-600 font-bold">👩 Female: ₹99</span>
+          <span className="text-red-600 font-bold">👨 Male: ₹199</span>
+          <span className="text-red-600 font-bold">👫 Couple: ₹249</span>
+          <span className="text-red-600 font-bold">👨‍👩‍👧‍👦 Family: ₹499</span>
+        </div>
+        <p className="text-center text-xs text-orange-700 font-semibold mt-2">⚡ Limited Time Offer!</p>
       </div>
       
       {/* No general note here, only on booking card */}

@@ -17,18 +17,24 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo and Title */}
           <div className="flex items-center space-x-3 min-w-0">
-            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0 relative">
               <img
                 src={logoSrc}
                 alt="Malang Ras Dandiya Logo"
                 className="w-full h-full object-contain"
               />
+              {/* Small Dhamaka Badge */}
+              <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-1 py-0.5 rounded animate-pulse">
+                🔥
+              </div>
             </div>
             <div className="truncate">
               <h1 className="font-bold text-base sm:text-lg bg-gradient-to-r from-pink-500 via-blue-500 to-green-500 bg-clip-text text-transparent drop-shadow-sm truncate">
                 Malang Ras Dandiya
               </h1>
               <p className="text-xs text-black-500 truncate">Event Management</p>
+              {/* Small dhamaka text for larger screens */}
+              <p className="hidden sm:block text-xs text-red-600 font-bold animate-pulse">🎉 Dhamaka Rates Sep 25-26!</p>
             </div>
           </div>
 

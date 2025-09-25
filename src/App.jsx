@@ -157,7 +157,7 @@
 
 
 
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -170,12 +170,42 @@ import CancellationRefundPolicy from "./components/CancellationRefundPolicy";
 import PrivacyPolicy from "./components/PrivacyPolicy";
 import ShippingPolicy from "./components/ShippingPolicy";
 
+// Helper function to check if today is a dhamaka special date
+const isDhamakaTodayOrTomorrow = () => {
+  const today = new Date();
+  const dateStr = today.toISOString().split('T')[0];
+  return dateStr === '2025-09-25' || dateStr === '2025-09-26' || 
+         dateStr === '2025-09-24'; // Show one day before as well
+};
+
 function App() {
+  const [showDhamakaBanner, setShowDhamakaBanner] = useState(isDhamakaTodayOrTomorrow());
+
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
         <Header />
-        <main className="relative">
+        
+        {/* Floating Dhamaka Banner - Sticky at top */}
+        {showDhamakaBanner && (
+          <div className="fixed top-16 left-0 right-0 z-40 mx-4">
+            <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white px-4 py-2 rounded-lg shadow-2xl flex items-center justify-between animate-pulse">
+              <div className="flex items-center space-x-2 text-sm font-bold">
+                <span className="text-lg">🔥</span>
+                <span>DHAMAKA RATES on Sep 25-26! Female ₹99 | Male ₹199 | Couple ₹249</span>
+                <span className="text-lg">🔥</span>
+              </div>
+              <button 
+                onClick={() => setShowDhamakaBanner(false)}
+                className="ml-4 text-white hover:text-yellow-200 font-bold text-lg"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+        )}
+
+        <main className="relative" style={{ marginTop: showDhamakaBanner ? '3rem' : '0' }}>
           <div className="absolute inset-0 bg-gradient-to-br from-orange-50/30 via-red-50/30 to-yellow-50/30"></div>
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_25%,rgba(251,146,60,0.1),transparent_50%),radial-gradient(circle_at_75%_75%,rgba(239,68,68,0.1),transparent_50%)]"></div>
           <div className="relative">
