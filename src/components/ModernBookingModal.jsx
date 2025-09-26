@@ -3,42 +3,71 @@ import ReactDOM from "react-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// Helper function to check if the selected date is a dhamaka special date
-const isDhamakaSpecialDate = (bookingDate) => {
-  if (!bookingDate) return false;
+// Helper function to get dhamaka date type
+const getDhamakaDateType = (bookingDate) => {
+  if (!bookingDate) return null;
   const dateStr = bookingDate.toString();
-  return dateStr === '2025-09-25' || dateStr === '2025-09-26';
+  
+  // Disable old dates (Sep 23-26)
+  if (['2025-09-23', '2025-09-24', '2025-09-25', '2025-09-26'].includes(dateStr)) {
+    return 'disabled';
+  }
+  
+  // Check for Sep 27-28, 2025
+  if (dateStr === '2025-09-27' || dateStr === '2025-09-28') {
+    return 'dhamaka_27_28';
+  }
+  
+  // Check for Sep 29-30, 2025
+  if (dateStr === '2025-09-29' || dateStr === '2025-09-30') {
+    return 'dhamaka_29_30';
+  }
+  
+  return null;
 };
 
 // Get pricing based on booking date
 const getTicketPricing = (bookingDate) => {
-  const isSpecialDate = isDhamakaSpecialDate(bookingDate);
+  const dhamakaType = getDhamakaDateType(bookingDate);
+  
+  // Regular pricing
+  const regularPricing = {
+    female: { base: 399 },      // 👩 Female – ₹399
+    couple: { base: 699 },      // 👫 Couple – ₹699
+    family: { base: 1300 },     // 👨‍👩‍👧‍👦 Family (4 members) – ₹1300
+    male: { base: 499 }         // 👨 Male – ₹499
+  };
+  
+  let singlePricing = regularPricing;
+  
+  // Apply dhamaka pricing based on date
+  if (dhamakaType === 'dhamaka_27_28') {
+    singlePricing = {
+      female: { base: 249 },      // 👩 Female – ₹249 (DHAMAKA!)
+      male: { base: 299 },        // � Male – ₹299 (DHAMAKA!)
+      couple: { base: 399 },      // 👫 Couple – ₹399 (DHAMAKA!)
+      family: { base: 749 },      // 👨‍👩‍👧‍👦 Family – ₹749 (DHAMAKA!)
+    };
+  } else if (dhamakaType === 'dhamaka_29_30') {
+    singlePricing = {
+      female: { base: 299 },      // 👩 Female – ₹299 (DHAMAKA!)
+      male: { base: 399 },        // � Male – ₹399 (DHAMAKA!)
+      couple: { base: 499 },      // 👫 Couple – ₹499 (DHAMAKA!)
+      family: { base: 949 },      // 👨‍👩‍👧‍👦 Family – ₹949 (DHAMAKA!)
+    };
+  }
   
   return {
     // 🎟 Single Day Entry Tickets
-    single: isSpecialDate ? {
-      // 🎉 DHAMAKA RATES for Sep 25-26
-      female: { base: 99 },       // 👩 Female – ₹99 (DHAMAKA!)
-      couple: { base: 249 },      // 👫 Couple – ₹249 (DHAMAKA!)
-      kids: { base: 99 },         // 🧒 Kids – ₹99 (DHAMAKA!)
-      family: { base: 499 },      // 👨‍👩‍👧‍👦 Family – ₹499 (DHAMAKA!)
-      male: { base: 199 }         // 👨 Male – ₹199 (DHAMAKA!)
-    } : {
-      // Regular pricing for other dates
-      female: { base: 399 },      // 👩 Female – ₹399
-      couple: { base: 699 },      // 👫 Couple – ₹699
-      kids: { base: 199 },        // 🧒 Kids (6-12 yrs) – ₹199
-      family: { base: 1599 },     // 👨‍👩‍👧‍👦 Family (4 members) – ₹1599
-      male: { base: 699 }         // 👨 Male – ₹699 (Stag Male Not Allowed)
-    },
+    single: singlePricing,
     // 🔥 Season Pass Tickets (All 8 Days) - Always regular pricing
     season: {
       female: { base: 2499 },     // 👩 Female Season – ₹2499
       couple: { base: 3499 },     // 👫 Couple Season – ₹3499
       family: { base: 5999 },     // 👨‍👩‍👧‍👦 Family Season – ₹5999
-      kids: { base: 999 },        // 🧒 Kids Season Pass – ₹999
       male: { base: 2999 }        // 👨 Male Season – ₹2999
-    }
+    },
+    dhamakaType: dhamakaType
   };
 };
 
@@ -70,7 +99,6 @@ const ModernBookingModal = () => {
       female: 0,
       male: 0,
       couple: 0,
-      kids: 0,
       family: 0,
     },
   });
@@ -92,8 +120,9 @@ const ModernBookingModal = () => {
   // Dynamic pricing and labels based on booking date - recalculated on each render
   const TICKET_PRICING = useMemo(() => getTicketPricing(ticketData.booking_date), [ticketData.booking_date]);
 
-  // Helper: September 23rd female discount
-  const isFemaleDiscountDay = ticketData.booking_date === "2025-09-23";
+  // Check if date is disabled
+  const dhamakaType = getDhamakaDateType(ticketData.booking_date);
+  const isDateDisabled = dhamakaType === 'disabled';
 
   // Dynamic label map based on current pricing
   const labelMap = useMemo(() => {
@@ -102,7 +131,6 @@ const ModernBookingModal = () => {
       single: {
         female: `Female - ₹${pricing.single.female.base}`,
         couple: `Couple - ₹${pricing.single.couple.base}`,
-        kids: `Kids (6-12 yrs) - ₹${pricing.single.kids.base}`,
         family: `Family (4 members) - ₹${pricing.single.family.base}`,
         male: `Male - ₹${pricing.single.male.base} (Stag Male Are Not Allowed)`
       },
@@ -110,43 +138,20 @@ const ModernBookingModal = () => {
         female: `Season Pass - Female (9 Days) - ₹${pricing.season.female.base}`,
         couple: `Season Pass - Couple (9 Days) - ₹${pricing.season.couple.base}`,
         family: `Season Pass - Family (4) (9 Days) - ₹${pricing.season.family.base}`,
-        kids: `Season Pass - Kids (9 Days) - ₹${pricing.season.kids.base}`,
         male: `Season Pass - Male (9 Days) - ₹${pricing.season.male.base} (Stag Male Are Not Allowed)`
       }
     };
   }, [TICKET_PRICING]);
 
-  // Calculate pricing for all pass types - with bulk discounts and female discount
+  // Calculate pricing for all pass types - simple base pricing only
   const calculatePrice = () => {
     let totalAmount = 0;
-    let discountApplied = false;
-    let savings = 0;
     let details = [];
     
-    // Expand passes to get actual ticket count (similar to backend logic)
-    const expandedPasses = { ...ticketData.passes };
+    // Calculate total tickets
+    const totalTickets = Object.values(ticketData.passes).reduce((sum, count) => sum + (Number(count) || 0), 0);
     
-    // Expand family passes: 1 family = 2 male + 2 female
-    if (expandedPasses.family > 0) {
-      const familyCount = expandedPasses.family;
-      expandedPasses.male = (expandedPasses.male || 0) + (familyCount * 2);
-      expandedPasses.female = (expandedPasses.female || 0) + (familyCount * 2);
-      delete expandedPasses.family; // Remove family after expansion
-    }
-    
-    // Expand couple passes: 1 couple = 1 male + 1 female
-    if (expandedPasses.couple > 0) {
-      const coupleCount = expandedPasses.couple;
-      expandedPasses.male = (expandedPasses.male || 0) + coupleCount;
-      expandedPasses.female = (expandedPasses.female || 0) + coupleCount;
-      delete expandedPasses.couple; // Remove couple after expansion
-    }
-    
-    // Calculate total tickets after expansion for bulk discount eligibility
-    const totalTickets = Object.values(expandedPasses).reduce((sum, count) => sum + (Number(count) || 0), 0);
-    const isBulkDiscount = totalTickets >= 6;
-    
-    // Process original passes for pricing (before expansion)
+    // Process passes for pricing (no discounts or bulk pricing)
     Object.entries(ticketData.passes).forEach(([type, count]) => {
       count = Number(count) || 0;
       if (!count) return;
@@ -154,106 +159,43 @@ const ModernBookingModal = () => {
       const pricing = TICKET_PRICING[ticketType]?.[type];
       if (!pricing) return;
 
-      let unitPrice = pricing.base;
-      let originalPrice = pricing.base;
-      let typeDiscount = 0;
-
-      // Female ticket logic
-      if (type === 'female' && ticketType === 'single') {
-        if (isFemaleDiscountDay) {
-          // On 23rd Sep, female tickets are ₹1
-          unitPrice = 1;
-          typeDiscount = (pricing.base - 1) * count;
-          discountApplied = true;
-          savings += typeDiscount;
-        } else if (isBulkDiscount) {
-          // Bulk offer for female from 24th Sep onwards
-          unitPrice = 350;
-          typeDiscount = (pricing.base - 350) * count;
-          discountApplied = true;
-          savings += typeDiscount;
-        }
-      } else if (type === 'couple' && ticketType === 'single') {
-        if (isFemaleDiscountDay) {
-          // On 23rd Sep, couple tickets are ₹249
-          unitPrice = 249;
-          typeDiscount = (pricing.base - 249) * count;
-          discountApplied = true;
-          savings += typeDiscount;
-        }
-        // No bulk discount for couples
-      } else if (type === 'male' && ticketType === 'single') {
-        if (isFemaleDiscountDay) {
-          // On 23rd Sep, male tickets are ₹249
-          unitPrice = 249;
-          typeDiscount = (pricing.base - 249) * count;
-          discountApplied = true;
-          savings += typeDiscount;
-        } else if (isBulkDiscount) {
-          // Bulk discount for male any day
-          unitPrice = 350;
-          typeDiscount = (pricing.base - 350) * count;
-          discountApplied = true;
-          savings += typeDiscount;
-        }
-      }
-      // No bulk discount for couple/family/kids
-
+      const unitPrice = pricing.base; // Always use base price
       totalAmount += unitPrice * count;
-      details.push({ type, count, unitPrice, originalPrice, typeDiscount });
+      details.push({ type, count, unitPrice, originalPrice: unitPrice, typeDiscount: 0 });
     });
     
-    // For display purposes, calculate a representative price based on selected tickets
+    // Calculate display prices - simple average
     let displayUnitPrice = 0;
     let displayOriginalPrice = 0;
     
     if (totalTickets > 0) {
-      if (isBulkDiscount) {
-        displayUnitPrice = 350;
-        // Use weighted average for original price display
-        let totalOriginalValue = 0;
-        Object.entries(ticketData.passes).forEach(([type, count]) => {
-          count = Number(count) || 0;
-          if (!count) return;
-          const pricing = TICKET_PRICING[ticketType]?.[type];
-          if (pricing) {
-            totalOriginalValue += pricing.base * count;
-          }
-        });
-        displayOriginalPrice = Math.round(totalOriginalValue / totalTickets);
-      } else {
-        // Use weighted average for display prices
-        let totalOriginalValue = 0;
-        Object.entries(ticketData.passes).forEach(([type, count]) => {
-          count = Number(count) || 0;
-          if (!count) return;
-          const pricing = TICKET_PRICING[ticketType]?.[type];
-          if (pricing) {
-            totalOriginalValue += pricing.base * count;
-          }
-        });
-        
-        displayUnitPrice = Math.round(totalAmount / totalTickets);
-        displayOriginalPrice = Math.round(totalOriginalValue / totalTickets);
-      }
+      displayUnitPrice = Math.round(totalAmount / totalTickets);
+      displayOriginalPrice = displayUnitPrice; // Same as unit price since no discounts
     } else {
       // Default to female pricing when no tickets selected
-      const femalePrice = TICKET_PRICING[ticketType]?.female?.base || 399;
-      displayUnitPrice = isFemaleDiscountDay ? 1 : femalePrice; // ₹1 on September 23rd
-      displayOriginalPrice = femalePrice;
+      displayUnitPrice = TICKET_PRICING[ticketType]?.female?.base || 399;
+      displayOriginalPrice = displayUnitPrice;
+    }
+    
+    // Get special offer message
+    let specialOfferMessage = null;
+    if (dhamakaType === 'dhamaka_27_28') {
+      specialOfferMessage = 'Dhamaka Rates Sep 27-28';
+    } else if (dhamakaType === 'dhamaka_29_30') {
+      specialOfferMessage = 'Dhamaka Rates Sep 29-30';
     }
     
     return { 
       totalAmount, 
-      discountApplied, 
-      savings, 
+      discountApplied: false, // No discounts anymore
+      savings: 0, // No savings
       details, 
-      isFemaleDiscountDay,
-      bulkEligible: isBulkDiscount, // Now properly calculated
       totalTickets,
       unitPrice: displayUnitPrice,
       finalPrice: displayUnitPrice,
-      originalPrice: displayOriginalPrice
+      originalPrice: displayOriginalPrice,
+      specialOffer: specialOfferMessage,
+      isDateDisabled: dhamakaType === 'disabled'
     };
   };
 
@@ -262,8 +204,14 @@ const ModernBookingModal = () => {
   const handleTicketSubmit = async () => {
 
     // Check if any tickets are selected
-    const { female = 0, male = 0, couple = 0, kids = 0, family = 0 } = ticketData.passes;
-    const totalTickets = [female, male, couple, kids, family].reduce((sum, count) => sum + (Number(count) || 0), 0);
+    const { female = 0, male = 0, couple = 0, family = 0 } = ticketData.passes;
+    const totalTickets = [female, male, couple, family].reduce((sum, count) => sum + (Number(count) || 0), 0);
+
+    // Check if selected date is disabled
+    if (ticketType === 'single' && priceInfo.isDateDisabled) {
+      showToast("Bookings are no longer available for this date. Please select Sep 27-30 for dhamaka rates!");
+      return;
+    }
 
     if (ticketType === 'season') {
       // For season pass, only allow female, couple, family, and do not require date
@@ -277,11 +225,7 @@ const ModernBookingModal = () => {
         showToast("Male tickets must be booked with at least one female, family, or couple ticket.", 4000);
         return;
       }
-      // Restriction: 1 or more kids not allowed unless with female, family, or couple
-      if (kids > 0 && female === 0 && family === 0 && couple === 0) {
-        showToast("Kids tickets must be booked with at least one female, family, or couple ticket.", 4000);
-        return;
-      }
+
       if (!ticketData.booking_date || totalTickets === 0) {
         showToast("Please select date and number of tickets");
         return;
@@ -501,7 +445,7 @@ const ModernBookingModal = () => {
         female: 0,
         male: 0,
         couple: 0,
-        kids: 0,
+
         family: 0,
       },
     });
@@ -615,22 +559,9 @@ const ModernBookingModal = () => {
                 </h3>
                 <p className="text-gray-600 text-xs mb-4">Malang Raas Dandiya 2025 • Sep 23 - Oct 1</p>
 
-                {/* Bulk Discount Banner */}
-                <div className="bg-gradient-to-r from-yellow-200 to-pink-100 rounded-lg shadow flex items-center justify-center relative mb-3 mt-6 py-2 px-3">
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-yellow-400 text-white text-xs font-bold px-3 py-1 rounded-full shadow border-2 border-white" style={{letterSpacing:'0.04em'}}>SPECIAL OFFER</span>
-                  <span className="flex items-center text-lg font-bold">
-                    <svg className="w-6 h-6 mr-2 text-purple-800" fill="currentColor" viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 2.08 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                    <span className="text-orange-700">Buy 6 or more tickets</span>
-                    <span className="text-green-700 ml-2">& pay just ₹350/person</span>
-                  </span>
-                  {isFemaleDiscountDay && ticketType === 'single' && (
-                    <span className="block w-full text-center text-green-600 text-xs font-semibold mt-2">* On 23rd September, female tickets are ₹1, couple tickets are ₹249, and male tickets are ₹249.</span>
-                  )}
-                </div>
-
-                {/* Dhamaka Special Banner for Sep 25-26 - Enhanced */}
-                {isDhamakaSpecialDate(ticketData.booking_date) && ticketType === 'single' && (
-                  <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-lg shadow-xl relative mb-3 py-4 px-4 border-2 border-red-400 overflow-hidden">
+                {/* New Dhamaka Rates Banner */}
+                {priceInfo.specialOffer && ticketType === 'single' && (
+                  <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-lg shadow-xl relative mb-3 py-4 px-4 border-2 border-red-400 overflow-hidden mt-6">
                     {/* Animated background overlay */}
                     <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-orange-400 opacity-50 animate-pulse"></div>
                     
@@ -640,17 +571,44 @@ const ModernBookingModal = () => {
                         <span className="text-lg font-black tracking-wider">DHAMAKA RATES!</span>
                         <span className="text-2xl ml-1">🔥</span>
                       </div>
-                      <div className="text-sm font-bold mb-2">� Special Pricing for {ticketData.booking_date}!</div>
+                      <div className="text-sm font-bold mb-2">🎉 {priceInfo.specialOffer}!</div>
                       <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                        <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👩 Female ₹99</div>
-                        <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨 Male ₹199</div>
-                        <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👫 Couple ₹249</div>
-                        <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨‍👩‍👧‍👦 Family ₹499</div>
+                        {dhamakaType === 'dhamaka_27_28' && (
+                          <>
+                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👩 Female ₹249</div>
+                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨 Male ₹299</div>
+                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👫 Couple ₹399</div>
+                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨‍👩‍👧‍👦 Family ₹749</div>
+                          </>
+                        )}
+                        {dhamakaType === 'dhamaka_29_30' && (
+                          <>
+                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👩 Female ₹299</div>
+                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨 Male ₹399</div>
+                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👫 Couple ₹499</div>
+                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨‍👩‍👧‍👦 Family ₹949</div>
+                          </>
+                        )}
                       </div>
                       <div className="mt-2 text-xs font-semibold animate-bounce">⚡ Limited Time Only!</div>
                     </div>
                   </div>
                 )}
+
+                {/* Disabled dates warning */}
+                {priceInfo.isDateDisabled && ticketType === 'single' && (
+                  <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-3">
+                    <div className="flex items-center">
+                      <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"></path>
+                      </svg>
+                      <span className="font-semibold">Date Not Available</span>
+                    </div>
+                    <div className="text-sm mt-1">Bookings are no longer available for this date. Please select Sep 27-30 for dhamaka rates!</div>
+                  </div>
+                )}
+
+
               </div>
 
               <div className="space-y-2">
@@ -671,7 +629,7 @@ const ModernBookingModal = () => {
                           // Reset counts when switching to single to avoid season carryover
                           setTicketData({
                             booking_date: '',
-                            passes: { female: 0, male: 0, couple: 0, kids: 0, family: 0 },
+                            passes: { female: 0, male: 0, couple: 0, family: 0 },
                             pass_type: 'female'
                           });
                         }
@@ -695,7 +653,7 @@ const ModernBookingModal = () => {
                           // Reset counts when switching to season to avoid single carryover
                           setTicketData({
                             booking_date: '', // not used for season
-                            passes: { female: 0, male: 0, couple: 0, kids: 0, family: 0 },
+                            passes: { female: 0, male: 0, couple: 0, family: 0 },
                             pass_type: 'female'
                           });
                         }
@@ -773,34 +731,10 @@ const ModernBookingModal = () => {
                       return (
                         <div key={key} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 mb-1 border border-gray-200">
                           <span className="font-medium text-gray-700 text-sm">
-                            {key === 'female' && ticketType === 'single' && isFemaleDiscountDay ? (
-                              <>
-                                <span>Female</span>
-                                <span className="ml-2 text-xs">
-                                  <span className="line-through text-gray-400">₹399</span>
-                                  <span className="text-green-600 font-bold ml-1">₹1</span>
-                                  <span className="text-green-600 font-semibold ml-1">(99.7% OFF)</span>
-                                </span>
-                              </>
-                            ) : key === 'couple' && ticketType === 'single' && isFemaleDiscountDay ? (
-                              <>
-                                <span>Couple</span>
-                                <span className="ml-2 text-xs">
-                                  <span className="line-through text-gray-400">₹699</span>
-                                  <span className="text-pink-600 font-bold ml-1">₹249</span>
-                                  <span className="text-pink-600 font-semibold ml-1">(64% OFF)</span>
-                                </span>
-                              </>
-                            ) : key === 'male' && ticketType === 'single' && isFemaleDiscountDay ? (
-                              <>
-                                <span>Male</span>
-                                <span className="ml-2 text-xs">
-                                  <span className="line-through text-gray-400">₹399</span>
-                                  <span className="text-blue-600 font-bold ml-1">₹249</span>
-                                  <span className="text-blue-600 font-semibold ml-1">(37% OFF)</span>
-                                </span>
-                              </>
-                            ) : label}
+                            {label}
+                            {priceInfo.specialOffer && ticketType === 'single' && (
+                              <span className="ml-2 text-xs text-orange-600 font-semibold">🔥 DHAMAKA!</span>
+                            )}
                           </span>
                           <div className="flex items-center gap-2">
                             <button
@@ -855,13 +789,9 @@ const ModernBookingModal = () => {
                       <span className="text-base font-bold text-gray-700">Grand Total</span>
                       <span className="text-xl font-extrabold text-gray-900">₹{priceInfo.totalAmount}</span>
                     </div>
-                    {/* September 23rd special discount message */}
-                    {priceInfo.isFemaleDiscountDay && ticketType === 'single' && (
-                      <div className="text-green-600 text-xs font-semibold mt-1">🎉 September 23rd Special: Female tickets ₹1, Couple tickets only ₹249, Male tickets only ₹249!</div>
-                    )}
-                    {/* Bulk discount applied message */}
-                    {priceInfo.bulkEligible && (
-                      <div className="text-green-600 text-xs font-semibold mt-1">💰 Bulk Discount Applied: All tickets now just ₹350 each!</div>
+                    {/* Dhamaka special offer message */}
+                    {priceInfo.specialOffer && ticketType === 'single' && (
+                      <div className="text-orange-600 text-xs font-semibold mt-1">🔥 {priceInfo.specialOffer} - Special rates applied!</div>
                     )}
                   </div>
                 </div>
