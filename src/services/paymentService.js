@@ -109,9 +109,26 @@ class PaymentService {
     
     const quantity = Math.max(1, parseInt(numTickets) || 1);
     
-    // Fixed pricing - no bulk discounts
+    // Check for September 23rd special pricing
+    const isSeptember23 = bookingDate === '2025-09-23' || 
+                          (bookingDate && new Date(bookingDate).toISOString().slice(0, 10) === '2025-09-23');
+    
     let pricePerTicket = priceObj.base;
     let discountApplied = false;
+    
+    // Apply September 23rd special pricing for single day tickets
+    if (isSeptember23 && passDuration === 'daily') {
+      if (passType === 'female') {
+        pricePerTicket = 1;
+        discountApplied = true;
+      } else if (passType === 'couple') {
+        pricePerTicket = 249;
+        discountApplied = true;
+      } else if (passType === 'male') {
+        pricePerTicket = 249;
+        discountApplied = true;
+      }
+    }
     
     // If ticket breakdown is provided, calculate based on all tickets
     if (ticketBreakdown) {
@@ -123,7 +140,18 @@ class PaymentService {
         if (!typePrice || count <= 0) return;
         
         const typeQuantity = parseInt(count);
-        const unitPrice = typePrice.base;
+        let unitPrice = typePrice.base;
+        
+        // Apply September 23rd pricing for breakdown calculation too
+        if (isSeptember23 && passDuration === 'daily') {
+          if (type === 'female') {
+            unitPrice = 1;
+          } else if (type === 'couple') {
+            unitPrice = 249;
+          } else if (type === 'male') {
+            unitPrice = 249;
+          }
+        }
         
         totalAmount += unitPrice * typeQuantity;
       });
