@@ -559,38 +559,193 @@ const ModernBookingModal = () => {
                 </h3>
                 <p className="text-gray-600 text-xs mb-4">Malang Raas Dandiya 2025 • Sep 23 - Oct 1</p>
 
-                {/* New Dhamaka Rates Banner */}
+                {/* 🎯 COMPREHENSIVE OFFERS SECTION */}
+                <div className="bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 border-2 border-dashed border-orange-300 rounded-xl p-4 mb-4 shadow-lg">
+                  <div className="text-center mb-3">
+                    <h4 className="text-lg font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-600 mb-1">
+                      🎆 EXCLUSIVE OFFERS AVAILABLE! 🎆
+                    </h4>
+                    <p className="text-xs text-gray-600">Limited time special pricing - Don't miss out!</p>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    {/* Sep 27-28 Offer */}
+                    <div className="bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-300 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center">
+                          <span className="text-lg mr-2">🔥</span>
+                          <span className="font-bold text-pink-800">Sep 27-28 DHAMAKA!</span>
+                        </div>
+                        <span className="text-xs bg-pink-200 text-pink-800 px-2 py-1 rounded-full font-semibold">SAVE UP TO ₹450!</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-pink-600 font-bold">👩 Female ₹249</span>
+                          <div className="text-gray-600 line-through text-[10px]">₹399</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-blue-600 font-bold">👨 Male ₹299</span>
+                          <div className="text-gray-600 line-through text-[10px]">₹499</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-purple-600 font-bold">👫 Couple ₹399</span>
+                          <div className="text-gray-600 line-through text-[10px]">₹699</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-green-600 font-bold">👨‍👩‍👧‍👦 Family ₹749</span>
+                          <div className="text-gray-600 line-through text-[10px]">₹1300</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Sep 29-30 Offer */}
+                    <div className="bg-gradient-to-r from-blue-100 to-indigo-100 border border-blue-300 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center">
+                          <span className="text-lg mr-2">🎆</span>
+                          <span className="font-bold text-blue-800">Sep 29-30 DHAMAKA!</span>
+                        </div>
+                        <span className="text-xs bg-blue-200 text-blue-800 px-2 py-1 rounded-full font-semibold">SAVE UP TO ₹351!</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-pink-600 font-bold">👩 Female ₹299</span>
+                          <div className="text-gray-600 line-through text-[10px]">₹399</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-blue-600 font-bold">👨 Male ₹399</span>
+                          <div className="text-gray-600 line-through text-[10px]">₹499</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-purple-600 font-bold">👫 Couple ₹499</span>
+                          <div className="text-gray-600 line-through text-[10px]">₹699</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-green-600 font-bold">👨‍👩‍👧‍👦 Family ₹949</span>
+                          <div className="text-gray-600 line-through text-[10px]">₹1300</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Season Pass Offer */}
+                    <div className="bg-gradient-to-r from-green-100 to-emerald-100 border border-green-300 rounded-lg p-3">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center">
+                          <span className="text-lg mr-2">🏆</span>
+                          <span className="font-bold text-green-800">Season Pass - Best Value!</span>
+                        </div>
+                        <span className="text-xs bg-green-200 text-green-800 px-2 py-1 rounded-full font-semibold">ALL 9 DAYS!</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-pink-600 font-bold">👩 Female ₹2,499</span>
+                          <div className="text-green-600 text-[10px]">Only ₹278/day</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-blue-600 font-bold">👨 Male ₹2,999</span>
+                          <div className="text-green-600 text-[10px]">Only ₹333/day</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-purple-600 font-bold">👫 Couple ₹3,499</span>
+                          <div className="text-green-600 text-[10px]">Only ₹389/day</div>
+                        </div>
+                        <div className="bg-white/50 rounded px-2 py-1 text-center">
+                          <span className="text-green-600 font-bold">👨‍👩‍👧‍👦 Family ₹5,999</span>
+                          <div className="text-green-600 text-[10px]">Only ₹667/day</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-center pt-2">
+                      <p className="text-xs text-gray-600 font-medium">
+                        ⚡ Book now to secure these incredible rates! ⚡
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Enhanced Active Dhamaka Rates Banner */}
                 {priceInfo.specialOffer && ticketType === 'single' && (
-                  <div className="bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-lg shadow-xl relative mb-3 py-4 px-4 border-2 border-red-400 overflow-hidden mt-6">
-                    {/* Animated background overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-orange-400 opacity-50 animate-pulse"></div>
+                  <div className="relative mb-4 mt-6">
+                    {/* Glowing border animation */}
+                    <div className="absolute -inset-1 bg-gradient-to-r from-red-600 via-orange-500 to-yellow-500 rounded-lg blur opacity-75 animate-pulse"></div>
                     
-                    <div className="relative z-10 text-center">
-                      <div className="flex items-center justify-center mb-2">
-                        <span className="text-2xl mr-1">🔥</span>
-                        <span className="text-lg font-black tracking-wider">DHAMAKA RATES!</span>
-                        <span className="text-2xl ml-1">🔥</span>
+                    <div className="relative bg-gradient-to-r from-red-500 via-orange-500 to-yellow-500 text-white rounded-lg shadow-xl py-6 px-4 border-2 border-red-400 overflow-hidden">
+                      {/* Multiple animated background overlays */}
+                      <div className="absolute inset-0 bg-gradient-to-r from-red-400 to-orange-400 opacity-30 animate-pulse"></div>
+                      <div className="absolute inset-0 bg-gradient-to-l from-yellow-400 to-red-400 opacity-20 animate-bounce"></div>
+                      
+                      <div className="relative z-10 text-center">
+                        <div className="flex items-center justify-center mb-3">
+                          <span className="text-3xl mr-2 animate-bounce">🔥</span>
+                          <span className="text-xl font-black tracking-wider bg-white text-transparent bg-clip-text shadow-lg">
+                            ACTIVE DHAMAKA!
+                          </span>
+                          <span className="text-3xl ml-2 animate-bounce">🔥</span>
+                        </div>
+                        
+                        <div className="bg-white/20 rounded-lg p-2 mb-3 backdrop-blur-sm">
+                          <div className="text-lg font-bold mb-1">🎉 {priceInfo.specialOffer} - NOW LIVE!</div>
+                          <div className="text-sm opacity-90">You're getting the best rates available!</div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-3 text-sm font-bold">
+                          {dhamakaType === 'dhamaka_27_28' && (
+                            <>
+                              <div className="bg-white/30 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/20">
+                                <div>👩 Female</div>
+                                <div className="text-lg">₹249</div>
+                                <div className="text-xs opacity-75 line-through">₹399</div>
+                              </div>
+                              <div className="bg-white/30 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/20">
+                                <div>👨 Male</div>
+                                <div className="text-lg">₹299</div>
+                                <div className="text-xs opacity-75 line-through">₹499</div>
+                              </div>
+                              <div className="bg-white/30 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/20">
+                                <div>👫 Couple</div>
+                                <div className="text-lg">₹399</div>
+                                <div className="text-xs opacity-75 line-through">₹699</div>
+                              </div>
+                              <div className="bg-white/30 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/20">
+                                <div>👨‍👩‍👧‍👦 Family</div>
+                                <div className="text-lg">₹749</div>
+                                <div className="text-xs opacity-75 line-through">₹1300</div>
+                              </div>
+                            </>
+                          )}
+                          {dhamakaType === 'dhamaka_29_30' && (
+                            <>
+                              <div className="bg-white/30 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/20">
+                                <div>👩 Female</div>
+                                <div className="text-lg">₹299</div>
+                                <div className="text-xs opacity-75 line-through">₹399</div>
+                              </div>
+                              <div className="bg-white/30 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/20">
+                                <div>👨 Male</div>
+                                <div className="text-lg">₹399</div>
+                                <div className="text-xs opacity-75 line-through">₹499</div>
+                              </div>
+                              <div className="bg-white/30 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/20">
+                                <div>👫 Couple</div>
+                                <div className="text-lg">₹499</div>
+                                <div className="text-xs opacity-75 line-through">₹699</div>
+                              </div>
+                              <div className="bg-white/30 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/20">
+                                <div>👨‍👩‍👧‍👦 Family</div>
+                                <div className="text-lg">₹949</div>
+                                <div className="text-xs opacity-75 line-through">₹1300</div>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                        
+                        <div className="mt-4 flex items-center justify-center space-x-2">
+                          <span className="text-lg animate-pulse">⚡</span>
+                          <span className="text-sm font-bold animate-bounce">LIMITED TIME ONLY!</span>
+                          <span className="text-lg animate-pulse">⚡</span>
+                        </div>
                       </div>
-                      <div className="text-sm font-bold mb-2">🎉 {priceInfo.specialOffer}!</div>
-                      <div className="grid grid-cols-2 gap-2 text-xs font-bold">
-                        {dhamakaType === 'dhamaka_27_28' && (
-                          <>
-                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👩 Female ₹249</div>
-                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨 Male ₹299</div>
-                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👫 Couple ₹399</div>
-                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨‍👩‍👧‍👦 Family ₹749</div>
-                          </>
-                        )}
-                        {dhamakaType === 'dhamaka_29_30' && (
-                          <>
-                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👩 Female ₹299</div>
-                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨 Male ₹399</div>
-                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👫 Couple ₹499</div>
-                            <div className="bg-white/20 rounded px-2 py-1 backdrop-blur-sm">👨‍👩‍👧‍👦 Family ₹949</div>
-                          </>
-                        )}
-                      </div>
-                      <div className="mt-2 text-xs font-semibold animate-bounce">⚡ Limited Time Only!</div>
                     </div>
                   </div>
                 )}
@@ -729,13 +884,43 @@ const ModernBookingModal = () => {
                       if (ticketType === 'season' && !['female', 'couple', 'family'].includes(key)) return null;
                       
                       return (
-                        <div key={key} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2 mb-1 border border-gray-200">
-                          <span className="font-medium text-gray-700 text-sm">
-                            {label}
+                        <div key={key} className={`flex items-center justify-between rounded-lg px-3 py-2 mb-1 border ${
+                          priceInfo.specialOffer && ticketType === 'single' 
+                            ? 'bg-gradient-to-r from-orange-50 to-red-50 border-orange-200 shadow-sm' 
+                            : 'bg-gray-50 border-gray-200'
+                        }`}>
+                          <div className="flex flex-col">
+                            <span className="font-medium text-gray-700 text-sm flex items-center">
+                              {label}
+                              {priceInfo.specialOffer && ticketType === 'single' && (
+                                <span className="ml-2 flex items-center space-x-1">
+                                  <span className="text-xs bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-0.5 rounded-full font-bold animate-pulse">
+                                    🔥 OFFER!
+                                  </span>
+                                </span>
+                              )}
+                            </span>
                             {priceInfo.specialOffer && ticketType === 'single' && (
-                              <span className="ml-2 text-xs text-orange-600 font-semibold">🔥 DHAMAKA!</span>
+                              <div className="text-xs text-green-600 font-semibold mt-1">
+                                {dhamakaType === 'dhamaka_27_28' && (
+                                  <>
+                                    {key === 'female' && <span>Save ₹150! (was ₹399)</span>}
+                                    {key === 'male' && <span>Save ₹200! (was ₹499)</span>}
+                                    {key === 'couple' && <span>Save ₹300! (was ₹699)</span>}
+                                    {key === 'family' && <span>Save ₹551! (was ₹1300)</span>}
+                                  </>
+                                )}
+                                {dhamakaType === 'dhamaka_29_30' && (
+                                  <>
+                                    {key === 'female' && <span>Save ₹100! (was ₹399)</span>}
+                                    {key === 'male' && <span>Save ₹100! (was ₹499)</span>}
+                                    {key === 'couple' && <span>Save ₹200! (was ₹699)</span>}
+                                    {key === 'family' && <span>Save ₹351! (was ₹1300)</span>}
+                                  </>
+                                )}
+                              </div>
                             )}
-                          </span>
+                          </div>
                           <div className="flex items-center gap-2">
                             <button
                               type="button"
@@ -767,31 +952,111 @@ const ModernBookingModal = () => {
 
                 {/* Number of Tickets - handled per pass type above */}
 
-                {/* Price Preview - show breakdown for each pass type */}
-                <div className="bg-gradient-to-r from-pink-50 to-orange-50 rounded-lg p-3 border border-pink-100">
-                  <div className="flex flex-col gap-1">
-                    <div className="text-gray-600 text-sm mb-1">Total Amount</div>
-                    {priceInfo.details.map(({ type, count, unitPrice, originalPrice, typeDiscount }) => (
-                      count > 0 && (
-                        <div key={type} className="flex justify-between items-center text-xs text-gray-700">
-                          <span>{labelMap[ticketType][type]} <span className="font-bold">× {count}</span></span>
-                          <span>
-                            {typeDiscount > 0 && (
-                              <span className="line-through text-gray-400 mr-1">₹{originalPrice * count}</span>
-                            )}
-                            <span className={typeDiscount > 0 ? "text-green-700 font-bold" : "font-bold"}>₹{unitPrice * count}</span>
+                {/* Enhanced Price Preview with Savings Display */}
+                <div className={`rounded-lg p-4 border-2 ${
+                  priceInfo.specialOffer && ticketType === 'single'
+                    ? 'bg-gradient-to-br from-orange-50 via-red-50 to-pink-50 border-orange-300 shadow-lg'
+                    : 'bg-gradient-to-r from-pink-50 to-orange-50 border-pink-100'
+                }`}>
+                  <div className="flex flex-col gap-2">
+                    {/* Header with special offer indicator */}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-gray-700 font-semibold">💰 Pricing Breakdown</div>
+                      {priceInfo.specialOffer && ticketType === 'single' && (
+                        <div className="flex items-center space-x-1">
+                          <span className="text-xs bg-gradient-to-r from-orange-500 to-red-500 text-white px-2 py-1 rounded-full font-bold animate-pulse flex items-center">
+                            🔥 OFFER ACTIVE!
                           </span>
                         </div>
-                      )
-                    ))}
-                    <div className="border-t border-orange-200 my-2"></div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-base font-bold text-gray-700">Grand Total</span>
-                      <span className="text-xl font-extrabold text-gray-900">₹{priceInfo.totalAmount}</span>
+                      )}
                     </div>
-                    {/* Dhamaka special offer message */}
+                    
+                    {/* Ticket breakdown with original vs discounted prices */}
+                    {priceInfo.details.map(({ type, count, unitPrice }) => {
+                      if (count === 0) return null;
+                      
+                      // Calculate original price for comparison
+                      let originalPrice = unitPrice;
+                      if (priceInfo.specialOffer && ticketType === 'single') {
+                        const regularPricing = {
+                          female: 399, male: 499, couple: 699, family: 1300
+                        };
+                        originalPrice = regularPricing[type] || unitPrice;
+                      }
+                      
+                      const savings = (originalPrice - unitPrice) * count;
+                      
+                      return (
+                        <div key={type} className={`flex justify-between items-center p-2 rounded ${
+                          priceInfo.specialOffer && ticketType === 'single' && savings > 0
+                            ? 'bg-green-50 border border-green-200'
+                            : 'bg-white/50'
+                        }`}>
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium text-gray-700">
+                              {labelMap[ticketType][type]} × {count}
+                            </span>
+                            {savings > 0 && (
+                              <span className="text-xs text-green-600 font-semibold">
+                                💚 You save ₹{savings}!
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-right">
+                            {savings > 0 && (
+                              <div className="text-xs text-gray-400 line-through">₹{originalPrice * count}</div>
+                            )}
+                            <div className={`font-bold ${savings > 0 ? 'text-green-700 text-lg' : 'text-gray-900'}`}>
+                              ₹{unitPrice * count}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    
+                    {/* Total savings display */}
+                    {priceInfo.specialOffer && ticketType === 'single' && priceInfo.details.some(({ count }) => count > 0) && (
+                      <div className="bg-gradient-to-r from-green-100 to-emerald-100 border border-green-300 rounded-lg p-3 my-2">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-2">
+                            <span className="text-green-700 font-bold">🎉 Total Savings:</span>
+                          </div>
+                          <div className="text-green-700 font-bold text-lg">
+                            ₹{priceInfo.details.reduce((total, { type, count, unitPrice }) => {
+                              if (count === 0) return total;
+                              const regularPricing = { female: 399, male: 499, couple: 699, family: 1300 };
+                              const originalPrice = regularPricing[type] || unitPrice;
+                              return total + ((originalPrice - unitPrice) * count);
+                            }, 0)}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <div className="border-t border-orange-200 my-2"></div>
+                    
+                    {/* Grand Total */}
+                    <div className={`flex justify-between items-center p-3 rounded-lg ${
+                      priceInfo.specialOffer && ticketType === 'single'
+                        ? 'bg-gradient-to-r from-orange-100 to-yellow-100 border border-orange-300'
+                        : 'bg-white/50'
+                    }`}>
+                      <span className="text-lg font-bold text-gray-700">🏆 Grand Total</span>
+                      <span className={`text-2xl font-extrabold ${
+                        priceInfo.specialOffer && ticketType === 'single'
+                          ? 'text-orange-600'
+                          : 'text-gray-900'
+                      }`}>
+                        ₹{priceInfo.totalAmount}
+                      </span>
+                    </div>
+                    
+                    {/* Active offer message */}
                     {priceInfo.specialOffer && ticketType === 'single' && (
-                      <div className="text-orange-600 text-xs font-semibold mt-1">🔥 {priceInfo.specialOffer} - Special rates applied!</div>
+                      <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg p-2 text-center">
+                        <div className="text-sm font-bold">🔥 {priceInfo.specialOffer} - You're getting the best price!</div>
+                        <div className="text-xs opacity-90 mt-1">Limited time offer - Book now!</div>
+                      </div>
                     )}
                   </div>
                 </div>
